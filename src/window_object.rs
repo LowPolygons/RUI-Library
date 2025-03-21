@@ -2,13 +2,8 @@ use macroquad::prelude::*;
 use ::rand::Rng;
 use ::rand::rng;
 
-use crate::user_interaction::UserInteractionManager;
-use crate::main_window_manager::WindowManager;
-
 use crate::button_implementations::ButtonHandler;
-use crate::button_implementations::ToggleRaytracer;
 
-use std::collections::HashMap;
 use std::collections::BTreeMap;
 
 #[derive(Clone)]
@@ -26,17 +21,17 @@ pub struct RaytracerWindow {
 }
 
 impl RaytracerWindow {
-   pub fn new(X: f32, Y: f32, W: f32, H: f32, C: Color) -> Self {
+   pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, c_: Color) -> Self {
         RaytracerWindow {
-            x: X,
-            y: Y,
-            w: W,
-            h: H,
-            colour: C,
+            x: x_,
+            y: y_,
+            w: w_,
+            h: h_,
+            colour: c_,
            
             //TODO: AMEND AS
             render: false,
-            image_object: Image::gen_image_color(W as u16, H as u16, C),
+            image_object: Image::gen_image_color(w_ as u16, h_ as u16, c_),
         }
     }
 
@@ -59,13 +54,13 @@ pub struct ScreenDecoration {
 }
 
 impl ScreenDecoration {
-    pub fn new(X: f32, Y: f32, W: f32, H: f32, C: Color) -> Self {
+    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, c_: Color) -> Self {
         ScreenDecoration {
-            x: X,
-            y: Y,
-            w: W,
-            h: H,
-            colour: C,
+            x: x_,
+            y: y_,
+            w: w_,
+            h: h_,
+            colour: c_,
         }
     }
 }
@@ -86,12 +81,12 @@ pub struct Button {
 }
 
 impl Button {
-    pub fn new(X: f32, Y: f32, W: f32, H: f32, i_c: Color, h_c: Color, d_c: Color, handler: Box<dyn ButtonHandler>) -> Self {
+    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, i_c: Color, h_c: Color, d_c: Color, handler: Box<dyn ButtonHandler>) -> Self {
         Button {
-            x: X,
-            y: Y,
-            w: W,
-            h: H,
+            x: x_,
+            y: y_,
+            w: w_,
+            h: h_,
             idle_colour: i_c,
             hover_colour: h_c,
             depressed_colour: d_c,
@@ -162,13 +157,13 @@ impl WindowObjectMethods for RaytracerWindow {
             let mut rng = rng();
        
             //TODO: AMEND AS
-            for yPixel in 1..(self.h as i32){
-                for xPixel in 1..(self.w as i32) {
+            for y_pixel in 1..(self.h as i32){
+                for x_pixel in 1..(self.w as i32) {
                     let r: f32 = (rng.random_range(1..=255) as f32 / 255.0) as f32;
                     let g: f32 = (rng.random_range(1..=255) as f32 / 255.0) as f32; 
                     let b: f32 = (rng.random_range(1..=255) as f32 / 255.0) as f32;
 
-                    self.image_object.set_pixel(xPixel as u32, yPixel as u32, Color::new(r, g, b, 1.0));
+                    self.image_object.set_pixel(x_pixel as u32, y_pixel as u32, Color::new(r, g, b, 1.0));
                 }
             }
         }

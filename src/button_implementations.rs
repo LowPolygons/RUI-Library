@@ -1,13 +1,5 @@
-use crate::user_interaction::UserInteractionManager;
-use crate::main_window_manager::WindowManager;
 
 use crate::window_object::NonInteractable;
-use crate::window_object::OnlyInteractable;
-
-use crate::window_object::RaytracerWindow;
-use crate::window_object::ScreenDecoration;
-use crate::window_object::Button;
-use crate::window_object::WindowObjectMethods;
 
 use std::collections::BTreeMap;
 
@@ -28,7 +20,7 @@ impl ButtonHandler for ToggleRaytracer {
 
         match example {
             NonInteractable::RaytracerWindow(ref mut obj) => { obj.change_render_status() }
-            NonInteractable::ScreenDecoration(ref obj) => {}
+            NonInteractable::ScreenDecoration(ref _obj) => {}
         }
 
         clone_of_parts.insert(button_id+1, example);

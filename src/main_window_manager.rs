@@ -1,6 +1,5 @@
 use macroquad::prelude::*;
 
-use std::collections::HashMap;
 use std::collections::BTreeMap;
 
 use crate::window_object::NonInteractable;
@@ -78,11 +77,11 @@ impl WindowManagerMethods for WindowManager {
         self.non_interactable_components.insert(0, NonInteractable::ScreenDecoration(ScreenDecoration::new(10.0, 10.0, 330.0, 880.0, Color::new(0.2, 0.2, 0.2, 1.0))));
 
         //Init the graphics components
-        for (id, component) in &self.non_interactable_components {
+        for (_id, component) in &self.non_interactable_components {
            component.init(); 
         }
 
-        for (id, component) in &self.only_interactable_components {
+        for (_id, component) in &self.only_interactable_components {
            component.init(); 
         }
 
@@ -96,11 +95,11 @@ impl WindowManagerMethods for WindowManager {
         self.main_window_colour.b = (self.main_window_colour.b + 0.002) % 1.0;
 
         //Then call the graphics components Updates 
-        for (id, component) in &mut self.non_interactable_components {
+        for (_id, component) in &mut self.non_interactable_components {
            component.update(); 
         }
 
-        for (id, component) in &mut self.only_interactable_components {
+        for (_id, component) in &mut self.only_interactable_components {
            component.update(); 
         }
 

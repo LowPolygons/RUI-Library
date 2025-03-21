@@ -3,11 +3,6 @@ use macroquad::prelude::*;
 use crate::window_object::NonInteractable;
 use crate::window_object::OnlyInteractable;
 
-use crate::window_object::RaytracerWindow;
-use crate::window_object::ScreenDecoration;
-use crate::window_object::Button;
-use crate::window_object::WindowObjectMethods;
-
 use crate::main_window_manager::WindowManager;
 
 use std::collections::BTreeMap;
@@ -29,10 +24,10 @@ impl UserInteractionManager {
     }
 
     pub fn check_intersection(&self, xywh: (f32, f32, f32, f32)) -> bool {
-        return (   self.mouse_position.0 >= xywh.0
+        return     self.mouse_position.0 >= xywh.0
                 && self.mouse_position.1 >= xywh.1
                 && self.mouse_position.0 <= (xywh.0 + xywh.2)
-                && self.mouse_position.1 <= (xywh.1 + xywh.3))
+                && self.mouse_position.1 <= (xywh.1 + xywh.3)
     }
 }
 
@@ -45,7 +40,7 @@ impl UserInteractionManagerMethods for UserInteractionManager {
     fn update(&mut self, win_man: &mut WindowManager) {
         self.mouse_position = mouse_position();
               
-        let mut no_interactables: BTreeMap<u32, NonInteractable> = win_man.get_non_interactable_graphics_components(); 
+        let no_interactables: BTreeMap<u32, NonInteractable> = win_man.get_non_interactable_graphics_components(); 
         let only_interactables: &mut BTreeMap<u32, OnlyInteractable> = win_man.get_only_interactable_graphics_components();
         
         let mut news: BTreeMap<u32, NonInteractable> = BTreeMap::new();
