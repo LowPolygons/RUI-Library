@@ -157,7 +157,7 @@ impl WindowObjectMethods for RaytracerWindow {
         draw_rectangle(self.x, self.y, self.w, self.h, self.colour);
         
         if self.render {
-            println!("Iteration");
+            //println!("Iteration");
 
             let mut rng = rng();
        

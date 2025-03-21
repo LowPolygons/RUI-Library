@@ -57,6 +57,9 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                     //Check if it intersects, if so handle double_clicking here
                     obj.set_idle();
 
+                    if !is_mouse_button_down(MouseButton::Left) {
+                        obj.set_pressed_down(false);
+                    }
                     if self.check_intersection(obj.get_intersection_values()) {
                         if is_mouse_button_down(MouseButton::Left) {
                             obj.set_depressed();
@@ -64,12 +67,13 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                             if !obj.get_pressed_down() {
                                 let result: Option<BTreeMap<u32, NonInteractable>> = obj.on_interact(&id, no_interactables.clone());
                                 
+                                obj.set_pressed_down(true);
+
                                 if let Some(new_non_interactables) = result {
                                     news = new_non_interactables;
                                     has_changed = true;
                                     break;
                                 }
-                                obj.set_pressed_down(true);
                             }
 
                         } else {
@@ -83,6 +87,7 @@ impl UserInteractionManagerMethods for UserInteractionManager {
         }
 
         if has_changed { 
+            println!("The state has changed");
             win_man.set_non_interactable_graphics_components(news);
         }
     }

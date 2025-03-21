@@ -104,9 +104,9 @@ impl WindowManagerMethods for WindowManager {
            component.update(); 
         }
 
-        if let NonInteractable::RaytracerWindow(curr) = &self.non_interactable_components[&10] {
+       /* if let NonInteractable::RaytracerWindow(curr) = &self.non_interactable_components[&10] {
             println!("{}", curr.get_render_status());
-        }
+        }*/
     }
 }
 
