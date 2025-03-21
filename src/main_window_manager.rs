@@ -1,10 +1,10 @@
 use macroquad::prelude::*;
 
-
 use std::collections::HashMap;
 use std::collections::BTreeMap;
 
-use crate::window_object::WindowObject;
+use crate::window_object::NonInteractable;
+use crate::window_object::OnlyInteractable;
 
 use crate::window_object::RaytracerWindow;
 use crate::window_object::ScreenDecoration;
@@ -28,7 +28,8 @@ pub struct WindowManager {
     screen_width: f32,
     screen_height: f32,
     main_window_colour: Color,
-    graphics_components: BTreeMap<u32, WindowObject>,
+    non_interactable_components: BTreeMap<u32, NonInteractable>,
+    only_interactable_components: BTreeMap<u32, OnlyInteractable>,
 }
 
 impl WindowManager {
@@ -37,16 +38,21 @@ impl WindowManager {
             screen_width: w,
             screen_height: h,
             main_window_colour: Color::new(r, g, b, a),
-            graphics_components: BTreeMap::new(),
+            non_interactable_components: BTreeMap::new(),
+            only_interactable_components: BTreeMap::new(),
         }
     }
 
-    pub fn get_graphics_components(&mut self) -> &mut BTreeMap<u32, WindowObject> {
-        &mut self.graphics_components   
+    pub fn get_non_interactable_graphics_components(&self) -> BTreeMap<u32, NonInteractable> {
+        self.non_interactable_components.clone()
     }
 
-    pub fn set_graphics_components(&mut self, value: BTreeMap<u32, WindowObject>) {
-        self.graphics_components = value;
+    pub fn get_only_interactable_graphics_components(&mut self) -> &mut BTreeMap<u32, OnlyInteractable> {
+        &mut self.only_interactable_components
+    }
+
+    pub fn set_non_interactable_graphics_components(&mut self, value: BTreeMap<u32, NonInteractable>) {
+        self.non_interactable_components = value;
     }
 }
 
@@ -59,7 +65,7 @@ impl WindowManagerMethods for WindowManager {
 
         //A button that corresponds to a raytracer window must have exactly 1 less key 
 
-        self.graphics_components.insert(9, WindowObject::Button(
+        self.only_interactable_components.insert(9, OnlyInteractable::Button(
                 Button::new(20.0, 20.0, 310.0, 100.0,
                     Color::new(0.5, 0.05, 0.05, 1.0),
                     Color::new(0.6, 0.1, 0.1, 1.0),
@@ -67,14 +73,19 @@ impl WindowManagerMethods for WindowManager {
                     Box::new(ToggleRaytracer)
                 )
         ));
-        self.graphics_components.insert(10, WindowObject::RaytracerWindow(RaytracerWindow::new(350.0, 10.0, 1080.0, 880.0, Color::new(0.0, 0.0, 0.0, 1.0))));
+        self.non_interactable_components.insert(10, NonInteractable::RaytracerWindow(RaytracerWindow::new(350.0, 10.0, 1080.0, 880.0, Color::new(0.0, 0.0, 0.0, 1.0))));
        
-        self.graphics_components.insert(0, WindowObject::ScreenDecoration(ScreenDecoration::new(10.0, 10.0, 330.0, 880.0, Color::new(0.2, 0.2, 0.2, 1.0))));
+        self.non_interactable_components.insert(0, NonInteractable::ScreenDecoration(ScreenDecoration::new(10.0, 10.0, 330.0, 880.0, Color::new(0.2, 0.2, 0.2, 1.0))));
 
         //Init the graphics components
-        for (id, component) in &self.graphics_components {
+        for (id, component) in &self.non_interactable_components {
            component.init(); 
         }
+
+        for (id, component) in &self.only_interactable_components {
+           component.init(); 
+        }
+
     }
 
     fn update(&mut self) {
@@ -85,8 +96,16 @@ impl WindowManagerMethods for WindowManager {
         self.main_window_colour.b = (self.main_window_colour.b + 0.002) % 1.0;
 
         //Then call the graphics components Updates 
-        for (id, component) in &mut self.graphics_components {
-            component.update();
+        for (id, component) in &mut self.non_interactable_components {
+           component.update(); 
+        }
+
+        for (id, component) in &mut self.only_interactable_components {
+           component.update(); 
+        }
+
+        if let NonInteractable::RaytracerWindow(curr) = &self.non_interactable_components[&10] {
+            println!("{}", curr.get_render_status());
         }
     }
 }

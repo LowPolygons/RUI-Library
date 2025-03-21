@@ -19,7 +19,7 @@ pub struct RaytracerWindow {
     w: f32,
     h: f32,
     colour: Color,
-
+ 
     //These are Raytracer specific
     render: bool,
     image_object: Image, //Dimensions equal to the raytracer window, can use set_pixel(x, y, colour)
@@ -42,6 +42,10 @@ impl RaytracerWindow {
 
    pub fn change_render_status(&mut self) {
        self.render = !self.render;
+   }
+
+   pub fn get_render_status(&self) -> bool {
+       self.render
    }
 }
 
@@ -122,15 +126,21 @@ impl Button {
         self.active_colour = self.depressed_colour.clone();
     }
 
-    pub fn on_interact(&self, button_id: &u32, win_man_parts: BTreeMap<u32, WindowObject>) -> Option<BTreeMap<u32, WindowObject>> {
+    pub fn on_interact(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>) -> Option<BTreeMap<u32, NonInteractable>> {
         self.button_handler.on_click(button_id, win_man_parts)
     }
 }
 
-pub enum WindowObject {
+
+
+#[derive(Clone)]
+pub enum NonInteractable {
     RaytracerWindow(RaytracerWindow),
     ScreenDecoration(ScreenDecoration),
-    Button(Button),
+}
+
+pub enum OnlyInteractable {
+    Button(Button)
 }
 
 pub trait WindowObjectMethods {
@@ -191,21 +201,35 @@ impl WindowObjectMethods for Button {
 }
 
 
-impl WindowObjectMethods for WindowObject {
+impl WindowObjectMethods for NonInteractable {
     fn init(&self) {
         match self {
-            WindowObject::RaytracerWindow(object) => object.init(),
-            WindowObject::ScreenDecoration(object) => object.init(),
-            WindowObject::Button(object) => object.init(),
+            NonInteractable::RaytracerWindow(object) => object.init(),
+            NonInteractable::ScreenDecoration(object) => object.init(),
         }
     }
 
     fn update(&mut self) {
         match self {
-            WindowObject::RaytracerWindow(object) => object.update(),
-            WindowObject::ScreenDecoration(object) => object.update(),
-            WindowObject::Button(object) => object.update(),
+            NonInteractable::RaytracerWindow(object) => object.update(),
+            NonInteractable::ScreenDecoration(object) => object.update(),
         }
     }
 }
+
+
+impl WindowObjectMethods for OnlyInteractable {
+    fn init(&self) {
+        match self {
+            OnlyInteractable::Button(object) => object.init(),
+        }
+    }
+
+    fn update(&mut self) {
+        match self {
+            OnlyInteractable::Button(object) => object.update(),
+        }
+    }
+}
+
 

@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 
-use crate::window_object::WindowObject;
+use crate::window_object::NonInteractable;
+use crate::window_object::OnlyInteractable;
 
 use crate::window_object::RaytracerWindow;
 use crate::window_object::ScreenDecoration;
@@ -43,28 +44,16 @@ impl UserInteractionManagerMethods for UserInteractionManager {
     //Instead, send over a copy of the graphics components
     fn update(&mut self, win_man: &mut WindowManager) {
         self.mouse_position = mouse_position();
+              
+        let mut no_interactables: BTreeMap<u32, NonInteractable> = win_man.get_non_interactable_graphics_components(); 
+        let only_interactables: &mut BTreeMap<u32, OnlyInteractable> = win_man.get_only_interactable_graphics_components();
         
-        let graphics_components = win_man.get_graphics_components();
-        
-        let mut no_interactables: BTreeMap<u32, WindowObject> = BTreeMap::new();
-        let mut only_interactables: BTreeMap<u32, WindowObject> = BTreeMap::new();
+        let mut news: BTreeMap<u32, NonInteractable> = BTreeMap::new();
+        let mut has_changed: bool = false;
 
-        //Loop through and filter out any "button" type, or directly interactable types
-        for (id, component) in graphics_components {
+        for (id, component) in only_interactables {
             match component {
-                WindowObject::ScreenDecoration(obj) => {
-                    no_interactables.insert(*id, *component);
-                }
-                WindowObject::Button(obj) => {}
-                WindowObject::RaytracerWindow(obj) => {
-                    no_interactables.insert(*id, *component);
-                }
-            };
-        }
-
-        for (id, component) in graphics_components {
-            match component {
-                WindowObject::Button(obj) => {
+                OnlyInteractable::Button(obj) => {
                     //Check if it intersects, if so handle double_clicking here
                     obj.set_idle();
 
@@ -73,9 +62,13 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                             obj.set_depressed();
                             
                             if !obj.get_pressed_down() {
-                                let result: Option<BTreeMap<u32, WindowObject>> = obj.on_interact(&id, no_interactables);
-                                //obj.on_interact(&id, win_man.get_graphics_components());
-                                println!("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                                let result: Option<BTreeMap<u32, NonInteractable>> = obj.on_interact(&id, no_interactables.clone());
+                                
+                                if let Some(new_non_interactables) = result {
+                                    news = new_non_interactables;
+                                    has_changed = true;
+                                    break;
+                                }
                                 obj.set_pressed_down(true);
                             }
 
@@ -86,11 +79,11 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                         }
                     }
                 }
-                WindowObject::ScreenDecoration(_) => {}
-                WindowObject::RaytracerWindow(_) => {}
             } 
         }
 
-        println!("Mouse Position: {}, {}", self.mouse_position.0, self.mouse_position.1);
+        if has_changed { 
+            win_man.set_non_interactable_graphics_components(news);
+        }
     }
 }
