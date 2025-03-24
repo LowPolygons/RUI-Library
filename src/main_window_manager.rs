@@ -5,11 +5,13 @@ use std::collections::BTreeMap;
 use crate::window_object::NonInteractable;
 use crate::window_object::RaytracerWindow;
 use crate::window_object::ScreenDecoration;
+use crate::window_object::TextBlock;
 
 // Only Interactables 
 use crate::window_object::OnlyInteractable;
 use crate::window_object::Button;
 use crate::window_object::WindowObjectMethods;
+
 
 // Any Button Implementations Go Here
 use crate::button_implementations::ToggleRaytracer;
@@ -77,15 +79,17 @@ impl WindowManagerMethods for WindowManager {
        
         // TODO: Maybe move these to a separate file for neatness
         self.only_interactable_components.insert(9, OnlyInteractable::Button(
-                Button::new(20.0, 20.0, 310.0, 100.0,
+                Button::new(20.0, 40.0, 310.0, 50.0,
                     Color::new(0.5, 0.2, 0.2, 1.0),
                     Color::new(0.8, 0.5, 0.5, 1.0),
                     Color::new(0.3, 0.01, 0.01, 1.0),
                     Box::new(ToggleRaytracer)
                 )
         ));
+        self.non_interactable_components.insert(11, NonInteractable::TextBlock(TextBlock::new(70.0, 30.0, Color::new(1.0, 1.0, 1.0, 1.0), "Toggle Raytracer On/Off".to_string(), 20.0)));
         self.non_interactable_components.insert(10, NonInteractable::RaytracerWindow(RaytracerWindow::new(350.0, 10.0, 1080.0, 880.0, Color::new(0.0, 0.0, 0.0, 1.0)))); 
         self.non_interactable_components.insert(0,  NonInteractable::ScreenDecoration(ScreenDecoration::new(10.0, 10.0, 330.0, 880.0, Color::new(0.2, 0.2, 0.2, 1.0))));
+
 
         // Call the init functions for the graphics components
         for (_id, component) in &self.non_interactable_components {
@@ -110,6 +114,7 @@ impl WindowManagerMethods for WindowManager {
            component.update(); 
         }
 
+        println!("Frame");
         for (_id, component) in &mut self.only_interactable_components {
            component.update(); 
         }

@@ -6,6 +6,31 @@ use crate::button_implementations::ButtonHandler;
 
 use std::collections::BTreeMap;
 
+/*--===--===--===--===--===--===--===--===--===--*\
+|     Main Unimplemented Structure and Trait      | 
+\*--===--===--===--===--===--===--===--===--===--*/
+
+#[derive(Clone)]
+pub struct TextBlock {
+    x: f32,
+    y: f32,
+    colour: Color, 
+    text: String,
+    font_size: f32,
+}
+
+impl TextBlock {
+    pub fn new(x_: f32, y_: f32, colour_: Color, text_: String, font_size_: f32) -> Self {
+        TextBlock {
+            x: x_,
+            y: y_,
+            colour: colour_,
+            text: text_,
+            font_size: font_size_,
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct RaytracerWindow {
     //These are mandatory
@@ -132,6 +157,7 @@ impl Button {
 pub enum NonInteractable {
     RaytracerWindow(RaytracerWindow),
     ScreenDecoration(ScreenDecoration),
+    TextBlock(TextBlock),
 }
 
 pub enum OnlyInteractable {
@@ -142,6 +168,10 @@ pub trait WindowObjectMethods {
     fn init(&self);
     fn update(&mut self);
 }
+
+/*--===--===--===--===--===--===--===--===--===--*\
+|      Implement main Trait into Structures       | 
+\*--===--===--===--===--===--===--===--===--===--*/
 
 impl WindowObjectMethods for RaytracerWindow {
     fn init(&self) {
@@ -175,6 +205,7 @@ impl WindowObjectMethods for RaytracerWindow {
     }
 }
 
+
 impl WindowObjectMethods for ScreenDecoration {
     fn init(&self) {
 
@@ -182,6 +213,16 @@ impl WindowObjectMethods for ScreenDecoration {
 
     fn update(&mut self) {
         draw_rectangle(self.x, self.y, self.w, self.h, self.colour);
+    }
+}
+
+impl WindowObjectMethods for TextBlock {
+    fn init(&self) {
+        
+    }
+
+    fn update(&mut self) {
+        draw_text(&self.text, self.x, self.y, self.font_size, self.colour);
     }
 }
 
@@ -195,12 +236,19 @@ impl WindowObjectMethods for Button {
     }
 }
 
+/*--===--===--===--===--===--===--===--===--===--*\
+|       Implementing main Triat into Enums        | 
+|  - By doing things this way it lets you store the various graphics types in one array
+|                                                 |
+\*--===--===--===--===--===--===--===--===--===--*/
+
 
 impl WindowObjectMethods for NonInteractable {
     fn init(&self) {
         match self {
             NonInteractable::RaytracerWindow(object) => object.init(),
             NonInteractable::ScreenDecoration(object) => object.init(),
+            NonInteractable::TextBlock(object) => object.init(),
         }
     }
 
@@ -208,6 +256,7 @@ impl WindowObjectMethods for NonInteractable {
         match self {
             NonInteractable::RaytracerWindow(object) => object.update(),
             NonInteractable::ScreenDecoration(object) => object.update(),
+            NonInteractable::TextBlock(object) => object.update(),
         }
     }
 }

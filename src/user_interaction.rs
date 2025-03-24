@@ -56,7 +56,7 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                         obj.set_pressed_down(false);
                     }
                     if self.check_intersection(obj.get_intersection_values()) {
-                        if is_mouse_button_down(MouseButton::Left) {
+                        if is_mouse_button_down(MouseButton::Left) /*TODO: add a check so that if the mouse whilst pressed down is dragged onto the button, that it doesn't toggle the button */{
                             obj.set_depressed();
                             
                             if !obj.get_pressed_down() {
