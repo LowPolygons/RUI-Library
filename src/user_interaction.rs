@@ -32,11 +32,8 @@ impl UserInteractionManager {
 }
 
 impl UserInteractionManagerMethods for UserInteractionManager {
-    fn init(&mut self) {
+    fn init(&mut self) {}
 
-    }
-
-    //Instead, send over a copy of the graphics components
     fn update(&mut self, win_man: &mut WindowManager) {
         self.mouse_position = mouse_position();
               
@@ -46,10 +43,11 @@ impl UserInteractionManagerMethods for UserInteractionManager {
         let mut news: BTreeMap<u32, NonInteractable> = BTreeMap::new();
         let mut has_changed: bool = false;
 
+
+        //TODO: IT WOULD BE NICE TO MAKE THIS NEATER AND NOT BE 8-indent levels at peak
         for (id, component) in only_interactables {
             match component {
                 OnlyInteractable::Button(obj) => {
-                    //Check if it intersects, if so handle double_clicking here
                     obj.set_idle();
 
                     if !is_mouse_button_down(MouseButton::Left) {

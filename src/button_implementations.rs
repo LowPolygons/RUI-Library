@@ -25,7 +25,6 @@ impl ButtonHandler for ToggleRaytracer {
         //The input isn't directly modifyable, therefore make a clone
         let mut clone_of_parts = win_man_parts.clone();
 
-
         // Using ref (mainly used in match statements) means raytracer_window_object isn't consumed by the different statements
         match raytracer_window_object {
             // Internal modify of the render status

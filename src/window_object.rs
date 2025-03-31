@@ -237,7 +237,7 @@ impl WindowObjectMethods for Button {
 }
 
 /*--===--===--===--===--===--===--===--===--===--*\
-|       Implementing main Triat into Enums        | 
+|       Implementing main Trait into Enums        | 
 |  - By doing things this way it lets you store the various graphics types in one array
 |                                                 |
 \*--===--===--===--===--===--===--===--===--===--*/
