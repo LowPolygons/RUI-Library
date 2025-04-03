@@ -4,6 +4,8 @@ mod user_interaction;
 mod main_window_manager;
 mod window_object;
 mod button_implementations;
+mod init_graphics_objects;
+mod raytracer_script;
 
 use crate::user_interaction::UserInteractionManager;
 use crate::user_interaction::UserInteractionManagerMethods;

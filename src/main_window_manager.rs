@@ -3,18 +3,13 @@ use std::collections::BTreeMap;
 
 // Non Interactables
 use crate::window_object::NonInteractable;
-use crate::window_object::RaytracerWindow;
-use crate::window_object::ScreenDecoration;
-use crate::window_object::TextBlock;
 
 // Only Interactables 
 use crate::window_object::OnlyInteractable;
-use crate::window_object::Button;
 use crate::window_object::WindowObjectMethods;
 
+use crate::init_graphics_objects::init_graphics_objects_main;
 
-// Any Button Implementations Go Here
-use crate::button_implementations::ToggleRaytracer;
 
 /*--===--===--===--===--===--===--===--===--===--*\
 |     Main Unimplemented Structure and Trait      | 
@@ -67,29 +62,9 @@ impl WindowManagerMethods for WindowManager {
     fn init(&mut self) {
         // Updates the screen size to be the set width and height (by default it is 800x600)    
         request_new_screen_size(self.screen_width, self.screen_height);
-        
-        /*--===--===--===--===--===--===--===--===--===--*\
-        |           Defining graphics Components          v
-        |
-        |  - All IDs must be unique. Ideally, keep them unique across even across both non/only interactables structures
-        |  - For Buttons that toggle on or off raytracers, the button id must be exactly 1 id less
-        |                                                 
-        |                                                 ^
-        \*--===--===--===--===--===--===--===--===--===--*/
-       
-        // TODO: Maybe move these to a separate file for neatness
-        self.only_interactable_components.insert(9, OnlyInteractable::Button(
-                Button::new(20.0, 40.0, 310.0, 50.0,
-                    Color::new(0.5, 0.2, 0.2, 1.0),
-                    Color::new(0.8, 0.5, 0.5, 1.0),
-                    Color::new(0.3, 0.01, 0.01, 1.0),
-                    Box::new(ToggleRaytracer)
-                )
-        ));
-        self.non_interactable_components.insert(11, NonInteractable::TextBlock(TextBlock::new(70.0, 30.0, Color::new(1.0, 1.0, 1.0, 1.0), "Toggle Raytracer On/Off".to_string(), 20.0)));
-        self.non_interactable_components.insert(10, NonInteractable::RaytracerWindow(RaytracerWindow::new(350.0, 10.0, 1080.0, 880.0, Color::new(0.0, 0.0, 0.0, 1.0)))); 
-        self.non_interactable_components.insert(0,  NonInteractable::ScreenDecoration(ScreenDecoration::new(10.0, 10.0, 330.0, 880.0, Color::new(0.2, 0.2, 0.2, 1.0))));
-
+      
+        // This method adds the graphics components. It was moved to a separate file 
+        init_graphics_objects_main(&mut self.non_interactable_components, &mut self.only_interactable_components);
 
         // Call the init functions for the graphics components
         for (_id, component) in &self.non_interactable_components {

@@ -7,6 +7,7 @@ use crate::main_window_manager::WindowManager;
 
 use std::collections::BTreeMap;
 
+// Main Structure and Methods which will be used as an (or perhaps in the future, by an) Event Polling System
 pub trait UserInteractionManagerMethods {
     fn init(&mut self);
     fn update(&mut self, win_man: &mut WindowManager);
@@ -31,6 +32,7 @@ impl UserInteractionManager {
     }
 }
 
+// Implementation of the methods
 impl UserInteractionManagerMethods for UserInteractionManager {
     fn init(&mut self) {}
 
@@ -42,7 +44,6 @@ impl UserInteractionManagerMethods for UserInteractionManager {
         
         let mut news: BTreeMap<u32, NonInteractable> = BTreeMap::new();
         let mut has_changed: bool = false;
-
 
         //TODO: IT WOULD BE NICE TO MAKE THIS NEATER AND NOT BE 8-indent levels at peak
         for (id, component) in only_interactables {

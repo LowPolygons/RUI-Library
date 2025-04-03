@@ -103,10 +103,12 @@ pub struct Button {
 
     pressed_down: bool,
     button_handler: Box<dyn ButtonHandler>,
+
+    text: TextBlock,
 }
 
 impl Button {
-    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, i_c: Color, h_c: Color, d_c: Color, handler: Box<dyn ButtonHandler>) -> Self {
+    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, i_c: Color, h_c: Color, d_c: Color, handler: Box<dyn ButtonHandler>, text_: TextBlock) -> Self {
         Button {
             x: x_,
             y: y_,
@@ -119,6 +121,8 @@ impl Button {
             active_colour: i_c,
             pressed_down: false,
             button_handler: handler,
+
+            text: text_
         }
     }
     
@@ -151,7 +155,15 @@ impl Button {
     }
 }
 
+pub struct SelectionMenu {
+    x: f32,
+    y: f32,
+    w: f32,
+    h: f32,
 
+    border_size: f32,
+
+}
 
 #[derive(Clone)]
 pub enum NonInteractable {
@@ -161,7 +173,8 @@ pub enum NonInteractable {
 }
 
 pub enum OnlyInteractable {
-    Button(Button)
+    Button(Button),
+    SelectionMenu(SelectionMenu),
 }
 
 pub trait WindowObjectMethods {
@@ -182,13 +195,11 @@ impl WindowObjectMethods for RaytracerWindow {
         draw_rectangle(self.x, self.y, self.w, self.h, self.colour);
         
         if self.render {
-            //println!("Iteration");
-
             let mut rng = rng();
        
             //TODO: AMEND AS
-            for y_pixel in 1..(self.h as i32){
-                for x_pixel in 1..(self.w as i32) {
+            for y_pixel in 0..(self.h as i32){
+                for x_pixel in 0..(self.w as i32) {
                     let r: f32 = (rng.random_range(1..=255) as f32 / 255.0) as f32;
                     let g: f32 = (rng.random_range(1..=255) as f32 / 255.0) as f32; 
                     let b: f32 = (rng.random_range(1..=255) as f32 / 255.0) as f32;
@@ -228,11 +239,12 @@ impl WindowObjectMethods for TextBlock {
 
 impl WindowObjectMethods for Button {
     fn init(&self) {
-
+        self.text.init();
     }
 
     fn update(&mut self) {
         draw_rectangle(self.x, self.y, self.w, self.h, self.active_colour);
+        self.text.update();
     }
 }
 
