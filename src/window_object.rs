@@ -174,7 +174,7 @@ pub enum NonInteractable {
 
 pub enum OnlyInteractable {
     Button(Button),
-    SelectionMenu(SelectionMenu),
+    //SelectionMenu(SelectionMenu),
 }
 
 pub trait WindowObjectMethods {
