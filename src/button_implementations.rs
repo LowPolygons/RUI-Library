@@ -41,3 +41,12 @@ impl ButtonHandler for ToggleRaytracer {
         Some(clone_of_parts)
     }
 }
+
+pub struct SSHTest;
+
+impl ButtonHandler for SSHTest {
+    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>) -> Option<BTreeMap<u32, NonInteractable>> {
+        //Make a new SSH_Manager
+        None
+    }
+}

@@ -10,6 +10,7 @@ use std::collections::BTreeMap;
 |     Main Unimplemented Structure and Trait      | 
 \*--===--===--===--===--===--===--===--===--===--*/
 
+
 #[derive(Clone)]
 pub struct TextBlock {
     x: f32,
@@ -155,26 +156,24 @@ impl Button {
     }
 }
 
-pub struct SelectionMenu {
-    x: f32,
-    y: f32,
-    w: f32,
-    h: f32,
-
-    border_size: f32,
-
-}
-
 #[derive(Clone)]
+//These are objects that are not directly interactable with 
 pub enum NonInteractable {
+    // These are visually apparent onscreen
     RaytracerWindow(RaytracerWindow),
     ScreenDecoration(ScreenDecoration),
     TextBlock(TextBlock),
 }
 
+// TODO: THIS, iMPLEMENTING ssh2 SO I CAN UPLOAD AND DOWNLOAD FILES FROM SCARF NICELY
+//These are objects which do not appear directly onto the screen. They can be accessed by any
+//object, but not directly by the user either
+pub enum HiddenManager {
+    //SSHClient(SSHClient),
+}
+
 pub enum OnlyInteractable {
     Button(Button),
-    //SelectionMenu(SelectionMenu),
 }
 
 pub trait WindowObjectMethods {
@@ -287,5 +286,17 @@ impl WindowObjectMethods for OnlyInteractable {
         }
     }
 }
+/*
+impl WindowObjectMethods for HiddenManager {
+    fn init(&self) {
+        match self {
+            HiddenManager::SSHClient(object) => object.init(),
+        }
+    }
 
-
+    fn update(&mut self) {
+        match self {
+            HiddenManager::SSHClient(object) => object.update(),
+        }
+    }
+}*/

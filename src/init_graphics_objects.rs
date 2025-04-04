@@ -13,6 +13,7 @@ use crate::window_object::Button;
 
 // Any Button Implementations Go Here
 use crate::button_implementations::ToggleRaytracer;
+use crate::button_implementations::SSHTest;
 
         
 /*--===--===--===--===--===--===--===--===--===--*\
@@ -32,6 +33,16 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             Color::new(0.3, 0.01, 0.01, 1.0),
             Box::new(ToggleRaytracer),
             TextBlock::new(70.0, 70.0, Color::new(1.0, 1.0, 1.0, 1.0), "Toggle Raytracer On/Off".to_string(), 20.0)
+        )
+    ));
+
+    only_interactable_components.insert(20, OnlyInteractable::Button(
+        Button::new(20.0, 120.0, 310.0, 50.0,
+            Color::new(0.5, 0.2, 0.2, 1.0),
+            Color::new(0.8, 0.5, 0.5, 1.0),
+            Color::new(0.3, 0.01, 0.01, 1.0),
+            Box::new(SSHTest),
+            TextBlock::new(70.0, 150.0, Color::new(1.0, 1.0, 1.0, 1.0), "SSH Test".to_string(), 20.0)
         )
     ));
     non_interactable_components.insert(5, NonInteractable::RaytracerWindow(RaytracerWindow::new(349.0, 9.0, 1082.0, 882.0, Color::new(0.0, 0.0, 0.0, 1.0))));
