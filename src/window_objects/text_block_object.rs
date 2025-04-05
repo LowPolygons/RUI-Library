@@ -1,7 +1,6 @@
 use macroquad::prelude::*;
 
 use crate::window_objects::window_object_center::WindowObjectMethods;
-use crate::window_objects::window_object_center::NonInteractable;
 
 #[derive(Clone)]
 pub struct TextBlock {

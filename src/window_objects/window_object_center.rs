@@ -1,5 +1,3 @@
-use macroquad::prelude::*;
-
 use crate::window_objects::logger_object::*;
 use crate::window_objects::text_block_object::*;
 use crate::window_objects::raytracer_window_object::*;
