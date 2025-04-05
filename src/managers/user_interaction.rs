@@ -1,9 +1,9 @@
 use macroquad::prelude::*;
 
-use crate::window_object::NonInteractable;
-use crate::window_object::OnlyInteractable;
+use crate::window_objects::window_object_center::NonInteractable;
+use crate::window_objects::window_object_center::OnlyInteractable;
 
-use crate::main_window_manager::WindowManager;
+use crate::managers::main_window_manager::WindowManager;
 
 use std::collections::BTreeMap;
 

@@ -2,11 +2,11 @@ use macroquad::prelude::*;
 use std::collections::BTreeMap;
 
 // Non Interactables
-use crate::window_object::NonInteractable;
+use crate::window_objects::window_object_center::NonInteractable;
 
 // Only Interactables 
-use crate::window_object::OnlyInteractable;
-use crate::window_object::WindowObjectMethods;
+use crate::window_objects::window_object_center::OnlyInteractable;
+use crate::window_objects::window_object_center::WindowObjectMethods;
 
 use crate::init_graphics_objects::init_graphics_objects_main;
 

@@ -2,22 +2,23 @@ use macroquad::prelude::*;
 use std::collections::BTreeMap;
 
 // Non Interactables
-use crate::window_object::NonInteractable;
-use crate::window_object::RaytracerWindow;
-use crate::window_object::ScreenDecoration;
-use crate::window_object::TextBlock;
-use crate::window_object::Logger;
+use crate::window_objects::window_object_center::NonInteractable;
+use crate::window_objects::raytracer_window_object::RaytracerWindow;
+use crate::window_objects::screen_decoration_object::ScreenDecoration;
+use crate::window_objects::text_block_object::TextBlock;
+use crate::window_objects::logger_object::Logger;
 
 // Only Interactables 
-use crate::window_object::OnlyInteractable;
-use crate::window_object::Button;
-use crate::window_object::TextBox;
+use crate::window_objects::window_object_center::OnlyInteractable;
+use crate::window_objects::button_object::Button;
+use crate::window_objects::textbox_object::TextBox;
 
 // Any Button Implementations Go Here
-use crate::button_implementations::ToggleRaytracer;
-use crate::button_implementations::SSHTest;
+use crate::interactable_implementations::button_implementations::ToggleRaytracer;
+use crate::interactable_implementations::button_implementations::SSHTest;
 
-use crate::textbox_implementation::AddLogLine;
+// Any Textbox Implementations Go Here
+use crate::interactable_implementations::textbox_implementation::AddLogLine;
         
 /*--===--===--===--===--===--===--===--===--===--*\
 |           Defining graphics Components          v

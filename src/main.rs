@@ -1,18 +1,16 @@
 use macroquad::prelude::*;
 
-mod user_interaction;
-mod main_window_manager;
-mod window_object;
-mod button_implementations;
-mod textbox_implementation;
+mod window_objects;
+mod interactable_implementations;
+mod managers;
+
 mod init_graphics_objects;
-mod raytracer_script;
 
-use crate::user_interaction::UserInteractionManager;
-use crate::user_interaction::UserInteractionManagerMethods;
+use crate::managers::user_interaction::UserInteractionManager;
+use crate::managers::user_interaction::UserInteractionManagerMethods;
 
-use crate::main_window_manager::WindowManagerMethods;
-use crate::main_window_manager::WindowManager;
+use crate::managers::main_window_manager::WindowManagerMethods;
+use crate::managers::main_window_manager::WindowManager;
 
 #[macroquad::main("Raytracer")]
 async fn main() {
