@@ -89,7 +89,7 @@ impl WindowManagerMethods for WindowManager {
            component.update(); 
         }
 
-        println!("Frame");
+        //println!("Frame");
         for (_id, component) in &mut self.only_interactable_components {
            component.update(); 
         }

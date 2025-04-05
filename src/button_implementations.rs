@@ -33,6 +33,7 @@ impl ButtonHandler for ToggleRaytracer {
             // Need th(is)(ese) or the code won't run
             NonInteractable::ScreenDecoration(ref _obj) => {}
             NonInteractable::TextBlock(ref _obj) => {}
+            NonInteractable::Logger(ref _obj) => {}
         }
         
         // Insert both adds and modifies

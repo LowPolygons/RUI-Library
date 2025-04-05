@@ -6,6 +6,7 @@ use crate::window_object::NonInteractable;
 use crate::window_object::RaytracerWindow;
 use crate::window_object::ScreenDecoration;
 use crate::window_object::TextBlock;
+use crate::window_object::Logger;
 
 // Only Interactables 
 use crate::window_object::OnlyInteractable;
@@ -16,7 +17,7 @@ use crate::window_object::TextBox;
 use crate::button_implementations::ToggleRaytracer;
 use crate::button_implementations::SSHTest;
 
-use crate::textbox_implementation::Test;
+use crate::textbox_implementation::AddLogLine;
         
 /*--===--===--===--===--===--===--===--===--===--*\
 |           Defining graphics Components          v
@@ -45,7 +46,7 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             Color::new(1.0, 1.0, 1.0, 1.0),
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Click to type!".to_string(),
-            Box::new(Test),
+            Box::new(AddLogLine),
             TextBlock::new(30.0, 230.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0)
         )
     ));
@@ -59,7 +60,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             TextBlock::new(70.0, 150.0, Color::new(1.0, 1.0, 1.0, 1.0), "SSH Test".to_string(), 20.0)
         )
     ));
-    non_interactable_components.insert(5, NonInteractable::RaytracerWindow(RaytracerWindow::new(349.0, 9.0, 1082.0, 882.0, Color::new(0.0, 0.0, 0.0, 1.0))));
-    non_interactable_components.insert(10, NonInteractable::RaytracerWindow(RaytracerWindow::new(350.0, 10.0, 1080.0, 880.0, Color::new(0.0, 0.0, 0.0, 1.0)))); 
-    non_interactable_components.insert(0,  NonInteractable::ScreenDecoration(ScreenDecoration::new(10.0, 10.0, 330.0, 880.0, Color::new(0.2, 0.2, 0.2, 1.0))));
+    non_interactable_components.insert(5,  NonInteractable::ScreenDecoration(ScreenDecoration::new(1049.0, 9.0, 382.0, 882.0, Color::new(0.2, 0.2, 0.2, 1.0))));
+    non_interactable_components.insert(10, NonInteractable::RaytracerWindow(RaytracerWindow::new(1050.0, 10.0, 380.0, 880.0, Color::new(0.0, 0.0, 0.0, 1.0))));
+    non_interactable_components.insert(0,  NonInteractable::ScreenDecoration(ScreenDecoration::new(9.0, 9.0, 332.0, 882.0, Color::new(0.2, 0.2, 0.2, 1.0))));
+    non_interactable_components.insert(33, NonInteractable::ScreenDecoration(ScreenDecoration::new(349.0, 9.0, 692.0, 882.0, Color::new(0.2, 0.2, 0.2, 1.0))));
+    non_interactable_components.insert(50, NonInteractable::Logger(Logger::new(350.0, 10.0, 690.0, 880.0, 5.0, 20.0, Color::new(1.0, 1.0, 1.0, 1.0), ">>> ".to_string())));
 }

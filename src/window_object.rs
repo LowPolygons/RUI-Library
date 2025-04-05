@@ -16,6 +16,77 @@ const WIDEST_CHARACTER_PIXEL_WIDTH: f32 = 9.0;
 
 //TODO: MOVE SOME OF THE IMPLEMENTATIONS TO A SEPARATE FILES CUS ITS GETTING MESSY 
 
+
+#[derive(Clone)]
+pub struct Logger {
+    x: f32,
+    y: f32,
+    w: f32,
+    h: f32,
+    x_padding: f32,
+
+    lines: Vec<String>,
+    string_colour: Color,
+    font_size: f32,
+    line_tag: String,
+
+    max_num_chars: usize,
+}
+
+impl Logger {
+    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, padding: f32, size: f32, colour: Color, tag: String) -> Self {
+        Logger {
+            x: x_,
+            y: y_,
+            w: w_,
+            h: h_,
+            x_padding: padding,
+            lines: Vec::<String>::new(),
+            string_colour: colour,
+            font_size: size,
+            line_tag: tag,
+            max_num_chars: 0,
+        }
+    }
+
+    pub fn add_line(&mut self, inp: &str) {
+        let mut input: String = inp.to_string();
+        //Line tag at the start of every line, but if a line needs to go onto the next, it doesn;t
+        //have a line tag
+        let length_of_input: usize = input.len() + self.line_tag.len();
+
+        let distance_from_edge: f32 = (self.x + self.w) - self.x_padding - WIDEST_CHARACTER_PIXEL_WIDTH;
+
+        let max_num_chars: usize = (distance_from_edge / WIDEST_CHARACTER_PIXEL_WIDTH).floor() as usize;
+
+
+        let num_lines_to_add: usize = ((length_of_input as f32) / (max_num_chars as f32)).ceil() as usize;
+        let mut strings_to_add: Vec<String> = vec![String::new(); num_lines_to_add];
+       
+
+        input = self.line_tag.clone() + &input; 
+        
+        for index in 0..num_lines_to_add {
+            let curr_length: usize = input.len();
+            
+            if curr_length >= self.max_num_chars {
+                strings_to_add[index] = input[0..curr_length].to_string();
+                input = input[self.max_num_chars+1..input.len()].to_string();
+            } else {
+                strings_to_add[index] = input.clone()
+            }
+        }
+
+        for line in strings_to_add {
+            self.lines.push(line.clone());
+        }
+
+        for line in &self.lines {
+            println!("{}", line);
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct TextBlock {
     x: f32,
@@ -254,6 +325,10 @@ impl TextBox {
     pub fn on_interact(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>) -> Option<BTreeMap<u32, NonInteractable>> {
         self.on_enter.on_enter(textbox_id, win_man_parts, &self.text_container.get_text())
     }
+
+    pub fn clear_text(&mut self) {
+        self.text_container.set_text("".to_string());
+    }
 }
 
 #[derive(Clone)]
@@ -263,6 +338,7 @@ pub enum NonInteractable {
     RaytracerWindow(RaytracerWindow),
     ScreenDecoration(ScreenDecoration),
     TextBlock(TextBlock),
+    Logger(Logger),
 }
 
 // TODO: THIS, iMPLEMENTING ssh2 SO I CAN UPLOAD AND DOWNLOAD FILES FROM SCARF NICELY
@@ -327,9 +403,35 @@ impl WindowObjectMethods for ScreenDecoration {
     }
 }
 
+impl WindowObjectMethods for Logger {
+    fn init(&self) {
+    }
+
+    fn update(&mut self) {
+        //The font size is how tall the characters are
+        let max_lines: usize = (self.h / (self.font_size + 2.0)).floor() as usize;
+        let mut lower_index: usize = 0;
+        let upper_index: usize = self.lines.len();
+      
+        if self.lines.len() > max_lines {
+            lower_index = upper_index - max_lines - 1;
+        }
+        let range_of_indexes: f32 = (upper_index - lower_index) as f32;
+        let mut current: f32 = 0.0;
+
+        for index in lower_index..upper_index {
+            draw_text(&self.lines[index], self.x + self.x_padding, (self.y + self.font_size*range_of_indexes) - current*self.font_size, self.font_size, self.string_colour);
+
+            current = current + 1.0;
+        }
+    }
+}
+
+
+
 impl WindowObjectMethods for TextBlock {
     fn init(&self) {
-        
+      
     }
 
     fn update(&mut self) {
@@ -407,8 +509,6 @@ impl WindowObjectMethods for TextBox {
 
             let max_num_chars: usize = (distance_from_edge / WIDEST_CHARACTER_PIXEL_WIDTH).floor() as usize;
 
-            println!("BLEH {}, {}", distance_from_edge, max_num_chars);
-
             let string: String = self.text_container.get_text();
 
             if string.len() <= max_num_chars {
@@ -432,6 +532,7 @@ impl WindowObjectMethods for NonInteractable {
             NonInteractable::RaytracerWindow(object) => object.init(),
             NonInteractable::ScreenDecoration(object) => object.init(),
             NonInteractable::TextBlock(object) => object.init(),
+            NonInteractable::Logger(object) => object.init(),
         }
     }
 
@@ -440,6 +541,7 @@ impl WindowObjectMethods for NonInteractable {
             NonInteractable::RaytracerWindow(object) => object.update(),
             NonInteractable::ScreenDecoration(object) => object.update(),
             NonInteractable::TextBlock(object) => object.update(),
+            NonInteractable::Logger(object) => object.update(),
         }
     }
 }

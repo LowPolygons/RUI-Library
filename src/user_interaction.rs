@@ -102,18 +102,21 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                     }
 
                     if obj.get_pressed_down() {
-                        if is_key_down(KeyCode::Enter) {
+                        if is_key_down(KeyCode::Enter) && !is_mouse_button_down(MouseButton::Left) {
                             if !enter_press_failsafe {
                                 enter_press_failsafe = true;
                                 obj.set_pressed_down(false);
 
                                 let result: Option<BTreeMap<u32, NonInteractable>> = obj.on_interact(&id, no_interactables.clone());
-                             
+
+                                obj.clear_text();
+
                                 if let Some(new_non_interactables) = result {
                                     news = new_non_interactables;
                                     has_changed = true;
                                     break;
                                 }
+
                             }
                         } else {
                             enter_press_failsafe = false;
