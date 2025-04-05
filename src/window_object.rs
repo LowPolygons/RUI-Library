@@ -12,6 +12,7 @@ use std::collections::BTreeMap;
 
 // To be paired with .contains()
 const ALLOWED_CHARACTERS: &str = "1234567890-=!@#$%^&*()_+qwertyuiop[]\\QWERTYUIOP{}|asdfghjkl:'ASDFGHJKL;\"zxcvbnm,./ZXCVBNM<>? ";
+const WIDEST_CHARACTER_PIXEL_WIDTH: f32 = 9.0;
 
 //TODO: MOVE SOME OF THE IMPLEMENTATIONS TO A SEPARATE FILES CUS ITS GETTING MESSY 
 
@@ -43,6 +44,16 @@ impl TextBlock {
         self.text.clone()
     }
 
+    pub fn get_size(&self) -> f32 {
+        self.font_size.clone()
+    }
+
+    pub fn get_pos(&self) -> (f32, f32) {
+        (self.x.clone(), self.y.clone())
+    }
+    
+    //This is a method implemented for the TextBox structure to display a default text when it has
+    //no value
     fn empty_update(&mut self, default_string: &str) {
         draw_text(default_string, self.x, self.y, self.font_size, self.colour);
     }
@@ -322,6 +333,7 @@ impl WindowObjectMethods for TextBlock {
     }
 
     fn update(&mut self) {
+
         draw_text(&self.text, self.x, self.y, self.font_size, self.colour);
     }
 }
@@ -388,7 +400,22 @@ impl WindowObjectMethods for TextBox {
         if self.text_container.get_text() == "" {
             self.text_container.empty_update(&self.default_text);
         } else {
-            self.text_container.update();
+            //TODO: do some maths to calculate how many characters you can display of the text so
+            
+            //Added the WIDEST_CHARACTER_PIXEL_WIDTH so it has a 1 character padding
+            let distance_from_edge: f32 = (self.x + self.w) - self.text_container.get_pos().0 - WIDEST_CHARACTER_PIXEL_WIDTH;
+
+            let max_num_chars: usize = (distance_from_edge / WIDEST_CHARACTER_PIXEL_WIDTH).floor() as usize;
+
+            println!("BLEH {}, {}", distance_from_edge, max_num_chars);
+
+            let string: String = self.text_container.get_text();
+
+            if string.len() <= max_num_chars {
+                self.text_container.update()
+            } else {
+                self.text_container.empty_update(&string[string.len() - max_num_chars .. string.len()]);
+            }
         }
     }
 }

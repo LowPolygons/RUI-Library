@@ -46,7 +46,7 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Click to type!".to_string(),
             Box::new(Test),
-            TextBlock::new(70.0, 230.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0)
+            TextBlock::new(30.0, 230.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0)
         )
     ));
 
