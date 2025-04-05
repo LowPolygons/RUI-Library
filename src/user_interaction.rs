@@ -44,6 +44,8 @@ impl UserInteractionManagerMethods for UserInteractionManager {
         
         let mut news: BTreeMap<u32, NonInteractable> = BTreeMap::new();
         let mut has_changed: bool = false;
+        let mut enter_press_failsafe: bool = false;
+ 
 
         //TODO: IT WOULD BE NICE TO MAKE THIS NEATER AND NOT BE 8-indent levels at peak
         for (id, component) in only_interactables {
@@ -77,7 +79,50 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                         }
                     }
                 }
-            } 
+                OnlyInteractable::TextBox(obj) => {
+                    obj.set_idle();
+
+                    if self.check_intersection(obj.get_intersection_values()) {
+                        if is_mouse_button_down(MouseButton::Left) { /*TODO: add a check so that if the mouse whilst pressed down is dragged onto the button, that it doesn't toggle the button */
+                            obj.set_depressed();
+                            
+                            if !obj.get_pressed_down() {
+                                obj.set_pressed_down(true);
+                            }
+
+                        } else {
+                            obj.set_hover();
+                        }
+                    } else {
+                        //Doing it this way allows you to enter text without the mouse being
+                        //pressed down
+                        if is_mouse_button_down(MouseButton::Left) {
+                            obj.set_pressed_down(false);
+                        }
+                    }
+
+                    if obj.get_pressed_down() {
+                        if is_key_down(KeyCode::Enter) {
+                            if !enter_press_failsafe {
+                                enter_press_failsafe = true;
+                                obj.set_pressed_down(false);
+
+                                let result: Option<BTreeMap<u32, NonInteractable>> = obj.on_interact(&id, no_interactables.clone());
+                             
+                                if let Some(new_non_interactables) = result {
+                                    news = new_non_interactables;
+                                    has_changed = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            enter_press_failsafe = false;
+                        }
+                    } else {
+                        enter_press_failsafe = false;
+                    }
+                }
+            }
         }
 
         if has_changed { 

@@ -4,6 +4,7 @@ mod user_interaction;
 mod main_window_manager;
 mod window_object;
 mod button_implementations;
+mod textbox_implementation;
 mod init_graphics_objects;
 mod raytracer_script;
 

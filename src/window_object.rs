@@ -3,13 +3,17 @@ use ::rand::Rng;
 use ::rand::rng;
 
 use crate::button_implementations::ButtonHandler;
-
+use crate::textbox_implementation::TextboxMethod;
 use std::collections::BTreeMap;
 
 /*--===--===--===--===--===--===--===--===--===--*\
 |     Main Unimplemented Structure and Trait      | 
 \*--===--===--===--===--===--===--===--===--===--*/
 
+// To be paired with .contains()
+const ALLOWED_CHARACTERS: &str = "1234567890-=!@#$%^&*()_+qwertyuiop[]\\QWERTYUIOP{}|asdfghjkl:'ASDFGHJKL;\"zxcvbnm,./ZXCVBNM<>? ";
+
+//TODO: MOVE SOME OF THE IMPLEMENTATIONS TO A SEPARATE FILES CUS ITS GETTING MESSY 
 
 #[derive(Clone)]
 pub struct TextBlock {
@@ -29,6 +33,18 @@ impl TextBlock {
             text: text_,
             font_size: font_size_,
         }
+    }
+
+    pub fn set_text(&mut self, new_text: String) {
+        self.text = new_text;
+    }
+
+    pub fn get_text(&self) -> String {
+        self.text.clone()
+    }
+
+    fn empty_update(&mut self, default_string: &str) {
+        draw_text(default_string, self.x, self.y, self.font_size, self.colour);
     }
 }
 
@@ -156,6 +172,79 @@ impl Button {
     }
 }
 
+pub struct TextBox {
+    x: f32,
+    y: f32,
+    w: f32,
+    h: f32,
+    text_colour: Color,
+
+    idle_colour: Color,
+    hover_colour: Color,
+    depressed_colour: Color,
+    active_colour: Color,
+
+    default_text: String,
+    pressed_down: bool,
+
+    on_enter: Box<dyn TextboxMethod>,
+
+    text_container: TextBlock,
+
+    //This is for preventing character duplication
+    previous_char: char,
+    delete_failsafe: bool,
+}
+
+impl TextBox {
+    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, text_colour_: Color, idle: Color, hover: Color, depressed: Color, default: String, on_enter_: Box<dyn TextboxMethod>, text_block: TextBlock) -> Self {
+        TextBox {
+            x: x_,
+            y: y_,
+            w: w_,
+            h: h_,
+            text_colour: text_colour_,
+            idle_colour: idle,
+            hover_colour: hover,
+            depressed_colour: depressed,
+            active_colour: idle,
+            default_text: default,
+            on_enter: on_enter_,
+            pressed_down: false,
+            text_container: text_block,
+            previous_char: '\0',
+            delete_failsafe: false,
+        } 
+    }
+    pub fn get_intersection_values(&self) -> (f32, f32, f32, f32) {
+        (self.x, self.y, self.w, self.h)
+    }
+
+    pub fn set_idle(&mut self) {
+        self.active_colour = self.idle_colour.clone();
+    }
+
+    pub fn set_hover(&mut self) {
+        self.active_colour = self.hover_colour.clone();
+    }
+
+    pub fn set_depressed(&mut self) {
+        self.active_colour = self.depressed_colour.clone();
+    }
+
+    pub fn set_pressed_down(&mut self, b: bool) {
+        self.pressed_down = b;
+    }
+
+    pub fn get_pressed_down(&self) -> bool {
+        self.pressed_down
+    }
+
+    pub fn on_interact(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>) -> Option<BTreeMap<u32, NonInteractable>> {
+        self.on_enter.on_enter(textbox_id, win_man_parts, &self.text_container.get_text())
+    }
+}
+
 #[derive(Clone)]
 //These are objects that are not directly interactable with 
 pub enum NonInteractable {
@@ -174,6 +263,7 @@ pub enum HiddenManager {
 
 pub enum OnlyInteractable {
     Button(Button),
+    TextBox(TextBox),
 }
 
 pub trait WindowObjectMethods {
@@ -247,6 +337,61 @@ impl WindowObjectMethods for Button {
     }
 }
 
+impl WindowObjectMethods for TextBox {
+    fn init(&self) {
+        //Need to get text working
+        self.text_container.init();
+    }
+
+    fn update(&mut self) {
+        draw_rectangle(self.x, self.y, self.w, self.h, self.active_colour);
+        if self.pressed_down {
+            //TODO: Implement backspace
+            let down_key: Option<char> = get_char_pressed();
+           
+            if let Some(character) = down_key {
+                if ALLOWED_CHARACTERS.contains(&character.to_string()) 
+                    && character != self.previous_char {
+                    let mut current: String = self.text_container.get_text();
+
+                    current.push(character);
+
+                    self.text_container.set_text(current); 
+
+                    self.previous_char = character;
+                } else {
+                    self.previous_char = '\0';
+                }
+            } else {
+                if is_key_down(KeyCode::Backspace) {
+                    if !self.delete_failsafe {
+                        self.delete_failsafe = true;
+
+                        let mut current: String = self.text_container.get_text();
+
+                        if current.len() > 0 {
+                            current = current[0..current.len()-1].to_string(); //inclusive of start_index, not inclusive of end_index
+                        }
+
+                        self.text_container.set_text(current);
+                    }
+                } else {
+                    self.delete_failsafe = false;
+                }
+            }
+        } else {
+            self.previous_char = '\0';
+
+            clear_input_queue()
+        }
+        
+        if self.text_container.get_text() == "" {
+            self.text_container.empty_update(&self.default_text);
+        } else {
+            self.text_container.update();
+        }
+    }
+}
 /*--===--===--===--===--===--===--===--===--===--*\
 |       Implementing main Trait into Enums        | 
 |  - By doing things this way it lets you store the various graphics types in one array
@@ -277,12 +422,14 @@ impl WindowObjectMethods for OnlyInteractable {
     fn init(&self) {
         match self {
             OnlyInteractable::Button(object) => object.init(),
+            OnlyInteractable::TextBox(object) => object.init(),
         }
     }
 
     fn update(&mut self) {
         match self {
             OnlyInteractable::Button(object) => object.update(),
+            OnlyInteractable::TextBox(object) => object.update(),
         }
     }
 }
@@ -300,3 +447,4 @@ impl WindowObjectMethods for HiddenManager {
         }
     }
 }*/
+
