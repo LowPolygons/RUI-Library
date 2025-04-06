@@ -71,7 +71,7 @@ impl Logger {
 
 
 impl WindowObjectMethods for Logger {
-    fn init(&self) {
+    fn init(&mut self) {
     }
 
     fn update(&mut self) {

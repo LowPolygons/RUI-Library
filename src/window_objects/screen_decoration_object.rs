@@ -24,7 +24,7 @@ impl ScreenDecoration {
 }
 
 impl WindowObjectMethods for ScreenDecoration {
-    fn init(&self) {}
+    fn init(&mut self) {}
 
     fn update(&mut self) {
         draw_rectangle(self.x, self.y, self.w, self.h, self.colour);

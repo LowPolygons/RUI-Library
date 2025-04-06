@@ -1,3 +1,7 @@
+### MODIFY THE CODE SUCH THAT IT CAN BE USED AS A LIBRARY 
+
+### ADD UNINITS
+
 ### AMEND ALL INLINE TODOS
 
 ### FINISH NEATENING AND COMMENTING CODE
@@ -39,7 +43,7 @@ fn main() -> std::io::Result<()> {
     let mut channel = session.channel_session().unwrap();
     channel.exec("ls -la").unwrap();
 
-    // Read output
+// Read output
     let mut output = String::new();
     channel.read_to_string(&mut output).unwrap();
     println!("Output: {}", output);

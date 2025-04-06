@@ -7,10 +7,9 @@ pub mod screen_decoration_object;
 
 pub mod button_object;
 pub mod textbox_object;
+pub mod sshclient_object;
 
 // To be paired with .contains()
 pub const ALLOWED_CHARACTERS: &str = "1234567890-=!@#$%^&*()_+qwertyuiop[]\\QWERTYUIOP{}|asdfghjkl:'ASDFGHJKL;\"zxcvbnm,./ZXCVBNM<>? ";
 pub const WIDEST_CHARACTER_PIXEL_WIDTH: f32 = 9.0;
-
-
 

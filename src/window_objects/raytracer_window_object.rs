@@ -42,7 +42,7 @@ impl RaytracerWindow {
 }
 
 impl WindowObjectMethods for RaytracerWindow {
-    fn init(&self) {
+    fn init(&mut self) {
         
     }
 

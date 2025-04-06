@@ -73,7 +73,7 @@ impl Button {
 
 
 impl WindowObjectMethods for Button {
-    fn init(&self) {
+    fn init(&mut self) {
         self.text.init();
     }
 

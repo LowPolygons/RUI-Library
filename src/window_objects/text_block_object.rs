@@ -47,7 +47,7 @@ impl TextBlock {
 
 
 impl WindowObjectMethods for TextBlock {
-    fn init(&self) {
+    fn init(&mut self) {
       
     }
 

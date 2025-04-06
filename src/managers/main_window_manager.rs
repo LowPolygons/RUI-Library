@@ -67,11 +67,11 @@ impl WindowManagerMethods for WindowManager {
         init_graphics_objects_main(&mut self.non_interactable_components, &mut self.only_interactable_components);
 
         // Call the init functions for the graphics components
-        for (_id, component) in &self.non_interactable_components {
+        for (_id, component) in &mut self.non_interactable_components {
            component.init(); 
         }
 
-        for (_id, component) in &self.only_interactable_components {
+        for (_id, component) in &mut self.only_interactable_components {
            component.init(); 
         }
 

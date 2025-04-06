@@ -4,9 +4,10 @@ use crate::window_objects::raytracer_window_object::*;
 use crate::window_objects::screen_decoration_object::*;
 use crate::window_objects::button_object::*;
 use crate::window_objects::textbox_object::*;
+use crate::window_objects::sshclient_object::*;
 
 pub trait WindowObjectMethods {
-    fn init(&self);
+    fn init(&mut self);
     fn update(&mut self);
 }
 
@@ -19,7 +20,7 @@ pub enum NonInteractable {
 }
 
 impl WindowObjectMethods for NonInteractable {
-    fn init(&self) {
+    fn init(&mut self) {
         match self {
             NonInteractable::RaytracerWindow(object) => object.init(),
             NonInteractable::ScreenDecoration(object) => object.init(),
@@ -44,7 +45,7 @@ pub enum OnlyInteractable {
 }
 
 impl WindowObjectMethods for OnlyInteractable {
-    fn init(&self) {
+    fn init(&mut self) {
         match self {
             OnlyInteractable::Button(object) => object.init(),
             OnlyInteractable::TextBox(object) => object.init(),
@@ -60,27 +61,25 @@ impl WindowObjectMethods for OnlyInteractable {
 }
 
 
-/* TODO:
- * pub enum HiddenManager {
- *   SSHClient(SSHClient),
- * }
-*/
+pub enum HiddenManager {
+    SSHClient(SSHClient),
+}
 
-/*TODO:
- * impl WindowObjectMethods for HiddenManager {
- *   fn init(&self) {
- *       match self {
- *           HiddenManager::SSHClient(object) => object.init(),
- *       }
- *   }
- *
- *   fn update(&mut self) {
- *       match self {
- *           HiddenManager::SSHClient(object) => object.update(),
- *       }
- *   }
- *}
-*/
+
+impl WindowObjectMethods for HiddenManager {
+    fn init(&mut self) {
+        match self {
+            HiddenManager::SSHClient(object) => object.init(),
+        }
+    }
+
+    fn update(&mut self) {
+        match self {
+            HiddenManager::SSHClient(object) => object.update(),
+        }
+    }
+}
+
 
 
 

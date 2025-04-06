@@ -90,7 +90,7 @@ impl TextBox {
 
 
 impl WindowObjectMethods for TextBox {
-    fn init(&self) {
+    fn init(&mut self) {
         //Need to get text working
         self.text_container.init();
     }
