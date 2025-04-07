@@ -135,7 +135,6 @@ impl SSHClient {
                         return Err("[SSH ERROR] The channel was unable to gracefully close.".to_string());
                     }
                 }
-
                 // Now that all error-prone areas are covered, add the result to the return vector
                 resulting_lines.push(result);
 
@@ -151,5 +150,9 @@ impl SSHClient {
 impl WindowObjectMethods for SSHClient {
     fn init(&mut self) {}
 
-    fn update(&mut self) {}
+    fn update(&mut self) {
+        if self.session_still_valid {
+            //Only if it has been established that everything is okay should things go
+        }
+    }
 }

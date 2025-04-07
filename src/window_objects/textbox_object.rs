@@ -33,6 +33,7 @@ pub struct TextBox {
     //This is for preventing character duplication
     previous_char: char,
     delete_failsafe: bool,
+    first_frame_failsafe: bool,
 }
 
 impl TextBox {
@@ -53,6 +54,7 @@ impl TextBox {
             text_container: text_block,
             previous_char: '\0',
             delete_failsafe: false,
+            first_frame_failsafe: false,
         } 
     }
     pub fn get_intersection_values(&self) -> (f32, f32, f32, f32) {
@@ -98,43 +100,47 @@ impl WindowObjectMethods for TextBox {
     fn update(&mut self) {
         draw_rectangle(self.x, self.y, self.w, self.h, self.active_colour);
         if self.pressed_down {
-            //TODO: Implement backspace
-            let down_key: Option<char> = get_char_pressed();
+            if !self.first_frame_failsafe {
+                //TODO: Implement backspace
+                let down_key: Option<char> = get_char_pressed();
            
-            if let Some(character) = down_key {
-                if ALLOWED_CHARACTERS.contains(&character.to_string()) 
-                    && character != self.previous_char {
-                    let mut current: String = self.text_container.get_text();
-
-                    current.push(character);
-
-                    self.text_container.set_text(current); 
-
-                    self.previous_char = character;
-                } else {
-                    self.previous_char = '\0';
-                }
-            } else {
-                if is_key_down(KeyCode::Backspace) {
-                    if !self.delete_failsafe {
-                        self.delete_failsafe = true;
-
+                if let Some(character) = down_key {
+                    if ALLOWED_CHARACTERS.contains(&character.to_string()) 
+                        && character != self.previous_char {
                         let mut current: String = self.text_container.get_text();
 
-                        if current.len() > 0 {
-                            current = current[0..current.len()-1].to_string(); //inclusive of start_index, not inclusive of end_index
-                        }
+                        current.push(character);
 
-                        self.text_container.set_text(current);
+                        self.text_container.set_text(current); 
+
+                        self.previous_char = character;
+                    } else {
+                    self.previous_char = '\0';
                     }
                 } else {
-                    self.delete_failsafe = false;
+                    if is_key_down(KeyCode::Backspace) {
+                        if !self.delete_failsafe {
+                            self.delete_failsafe = true;
+
+                            let mut current: String = self.text_container.get_text();
+
+                            if current.len() > 0 {
+                                current = current[0..current.len()-1].to_string(); //inclusive of start_index, not inclusive of end_index
+                            }
+
+                            self.text_container.set_text(current);
+                        }
+                    } else {
+                        self.delete_failsafe = false;
+                    }
                 }
+            } else {
+                self.first_frame_failsafe = false;
+                clear_input_queue();
             }
         } else {
             self.previous_char = '\0';
-
-            clear_input_queue()
+            self.first_frame_failsafe = true;
         }
         
         if self.text_container.get_text() == "" {
