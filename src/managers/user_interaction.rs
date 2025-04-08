@@ -81,7 +81,8 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                 }
                 OnlyInteractable::TextBox(obj) => {
                     obj.set_idle();
-
+                    
+                    // This block will be used to update whether the textbox has focus 
                     if self.check_intersection(obj.get_intersection_values()) {
                         if is_mouse_button_down(MouseButton::Left) { /*TODO: add a check so that if the mouse whilst pressed down is dragged onto the button, that it doesn't toggle the button */
                             obj.set_depressed();
@@ -101,6 +102,8 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                         }
                     }
 
+                    // This block will be used to check whether pressing enter should clear the
+                    // text box
                     if obj.get_pressed_down() {
                         if is_key_down(KeyCode::Enter) && !is_mouse_button_down(MouseButton::Left) {
                             if !enter_press_failsafe {

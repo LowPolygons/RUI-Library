@@ -1,8 +1,11 @@
 use ssh2::Session;
 use std::io::prelude::*;
 use std::net::TcpStream;
+use std::collections::BTreeMap;
 
-use crate::window_objects::window_object_center::WindowObjectMethods;
+use crate::window_objects::window_object_center::NonInteractable;
+use crate::window_objects::window_object_center::OnlyInteractable;
+use crate::window_objects::window_object_center::HiddenObjectMethods;
 
 // Whichever button calls the make_ssh_handshake method should handle these errors for eg give
 // useful error messages to a logger
@@ -26,6 +29,11 @@ pub struct SSHClient {
     // This is a variable which is checked before this structure runs code - if the tcp stream
     // fails, to prevent the whole program closing this will block it
     session_still_valid: bool,
+
+    // TODO: have the login button call a new method to be defined in here. This will send over the
+    // IDs for the objects (hardcoded) that need to have the text cleared. this will in the update
+    // function check the values arent all equal to zero, then clear the box and reset to zero 
+    login_field_values: (u32, u32, u32),
 }
 
 impl SSHClient {
@@ -39,7 +47,13 @@ impl SSHClient {
             session: None,
 
             session_still_valid: true,
+
+            login_field_values: (0, 0, 0),
         }
+    }
+
+    pub fn update_login_field_values(&mut self, one: u32, two: u32, three: u32) {
+        self.login_field_values = (one, two, three);
     }
 
     pub fn make_ssh_handshake(&mut self, rs: String, un: String, pw: String) -> Result<i8, HandshakeErrorCode> {
@@ -147,12 +161,18 @@ impl SSHClient {
     }
 }
 
-impl WindowObjectMethods for SSHClient {
+impl HiddenObjectMethods for SSHClient {
     fn init(&mut self) {}
 
-    fn update(&mut self) {
+    fn update(&mut self, only: &mut BTreeMap<u32, OnlyInteractable>, none: &mut BTreeMap<u32, NonInteractable>) {
         if self.session_still_valid {
             //Only if it has been established that everything is okay should things go
+        }
+
+        if  self.login_field_values.0 != 0
+             && self.login_field_values.1 != 0
+             && self.login_field_values.2 != 0 {
+            //TODO: THIS
         }
     }
 }

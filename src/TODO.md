@@ -1,3 +1,8 @@
+### URGENT: add a feature to the textboxes which allows them to be cleared based on a given condition
+### URGENT: actually implement hidden features in a seperate loop. 
+    - have the login button send an enum with the IDs of the textboxes to a new hidden object which can then clear it without double referencing
+
+
 ### MODIFY THE CODE SUCH THAT IT CAN BE USED AS A LIBRARY 
 
 ### ADD UNINITS

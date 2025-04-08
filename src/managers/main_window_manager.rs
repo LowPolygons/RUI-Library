@@ -6,7 +6,10 @@ use crate::window_objects::window_object_center::NonInteractable;
 
 // Only Interactables 
 use crate::window_objects::window_object_center::OnlyInteractable;
-use crate::window_objects::window_object_center::WindowObjectMethods;
+use crate::window_objects::window_object_center::WindowObjectMethods; 
+
+use crate::window_objects::window_object_center::HiddenManager;
+use crate::window_objects::window_object_center::HiddenObjectMethods;
 
 use crate::init_graphics_objects::init_graphics_objects_main;
 
@@ -29,6 +32,7 @@ pub struct WindowManager {
     // Graphical Components
     non_interactable_components:  BTreeMap<u32,  NonInteractable>,
     only_interactable_components: BTreeMap<u32, OnlyInteractable>,
+    hidden_components: BTreeMap<u32, HiddenManager>, 
 }
 
 // Methods that are necessary for the structure itself, and therefore seperable from the Methods trait
@@ -40,6 +44,7 @@ impl WindowManager {
             main_window_colour: Color::new(r, g, b, a),
             non_interactable_components: BTreeMap::new(),
             only_interactable_components: BTreeMap::new(),
+            hidden_components: BTreeMap::new(),
         }
     }
     
@@ -92,6 +97,12 @@ impl WindowManagerMethods for WindowManager {
         //println!("Frame");
         for (_id, component) in &mut self.only_interactable_components {
            component.update(); 
+        }
+
+        for (_id, component) in &mut self.hidden_components {
+            // TODO: Amend so that it passes in a mutable reference to both interac types so that
+            // it can then support simultaneous updating
+            component.update(&mut self.only_interactable_components, &mut self.non_interactable_components);
         }
     }
 }

@@ -99,12 +99,15 @@ impl WindowObjectMethods for TextBox {
 
     fn update(&mut self) {
         draw_rectangle(self.x, self.y, self.w, self.h, self.active_colour);
+
+        // If the textbox is pressed down, this is the block of code which allows for proper user input
         if self.pressed_down {
             if !self.first_frame_failsafe {
-                //TODO: Implement backspace
+                // Only one key per frame
                 let down_key: Option<char> = get_char_pressed();
-           
+                    
                 if let Some(character) = down_key {
+                    // If it is valid and wasn't the character on the previous frame
                     if ALLOWED_CHARACTERS.contains(&character.to_string()) 
                         && character != self.previous_char {
                         let mut current: String = self.text_container.get_text();
@@ -115,7 +118,7 @@ impl WindowObjectMethods for TextBox {
 
                         self.previous_char = character;
                     } else {
-                    self.previous_char = '\0';
+                        self.previous_char = '\0';
                     }
                 } else {
                     if is_key_down(KeyCode::Backspace) {
