@@ -61,6 +61,14 @@ impl WindowManager {
     pub fn get_only_interactable_graphics_components(&mut self) -> &mut BTreeMap<u32, OnlyInteractable> {
         &mut self.only_interactable_components
     }
+
+    pub fn get_hidden_graphics_components(&mut self) -> &mut BTreeMap<u32, HiddenManager> {
+        &mut self.hidden_components
+    }
+
+    pub fn get_pair_of_graphics_components(&mut self) -> (&mut BTreeMap<u32, OnlyInteractable>, &mut BTreeMap<u32, HiddenManager>) {
+        (&mut self.only_interactable_components, &mut self.hidden_components)
+    }
 }
 
 impl WindowManagerMethods for WindowManager {
@@ -69,7 +77,7 @@ impl WindowManagerMethods for WindowManager {
         request_new_screen_size(self.screen_width, self.screen_height);
       
         // This method adds the graphics components. It was moved to a separate file 
-        init_graphics_objects_main(&mut self.non_interactable_components, &mut self.only_interactable_components);
+        init_graphics_objects_main(&mut self.non_interactable_components, &mut self.only_interactable_components, &mut self.hidden_components);
 
         // Call the init functions for the graphics components
         for (_id, component) in &mut self.non_interactable_components {
@@ -80,6 +88,9 @@ impl WindowManagerMethods for WindowManager {
            component.init(); 
         }
 
+        for (_id, component) in &mut self.hidden_components {
+            component.init();
+        }
     }
 
     fn update(&mut self) {
@@ -91,12 +102,12 @@ impl WindowManagerMethods for WindowManager {
 
         // Then call the graphics components Updates 
         for (_id, component) in &mut self.non_interactable_components {
-           component.update(); 
+            component.update(); 
         }
 
         //println!("Frame");
         for (_id, component) in &mut self.only_interactable_components {
-           component.update(); 
+            component.update(); 
         }
 
         for (_id, component) in &mut self.hidden_components {

@@ -7,6 +7,10 @@ use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::window_object_center::OnlyInteractable;
 use crate::window_objects::window_object_center::HiddenObjectMethods;
 
+use crate::window_objects::textbox_object::*;
+use crate::window_objects::button_object::*;
+
+const NO_REPEATERS: [&str; 3] = ["ls", "head", "tail"];
 // Whichever button calls the make_ssh_handshake method should handle these errors for eg give
 // useful error messages to a logger
 pub enum HandshakeErrorCode {
@@ -17,6 +21,7 @@ pub enum HandshakeErrorCode {
     SessionAuthFail,
 }
 
+//#[define(Copy)]
 pub struct SSHClient {
     remote_server: String,
     username: String,
@@ -34,10 +39,12 @@ pub struct SSHClient {
     // IDs for the objects (hardcoded) that need to have the text cleared. this will in the update
     // function check the values arent all equal to zero, then clear the box and reset to zero 
     login_field_values: (u32, u32, u32),
+
+    previous_commands: Vec<String>,
 }
 
 impl SSHClient {
-    pub fn new(rs: String, un: String, pw: String) -> Self {
+    pub fn new() -> Self {
         SSHClient {
             remote_server: String::new(),
             username: String::new(),
@@ -49,7 +56,15 @@ impl SSHClient {
             session_still_valid: true,
 
             login_field_values: (0, 0, 0),
+
+
+            previous_commands: Vec::<String>::new(),
+            //TODO: THIS logger_id: u32
         }
+    }
+
+    pub fn get_previous_commands(&mut self) -> Vec<String> {
+        self.previous_commands.clone()
     }
 
     pub fn update_login_field_values(&mut self, one: u32, two: u32, three: u32) {
@@ -103,11 +118,32 @@ impl SSHClient {
         Ok(1)
     }
     
-    pub fn execute_command(&mut self, command: &str) -> Result<Vec<String>, String> {
+    pub fn execute_command(&mut self, new_command: &str, add_to_command_list: bool) -> Result<Vec<String>, String> {
         let mut current_channel = self.session
             .clone()
             .unwrap()
             .channel_session();
+        
+        //Append all previous commands
+        let mut full_command: String = "source ~/.bashrc".to_string(); 
+        
+        for com in &self.previous_commands {
+            let mut dont_add: bool = false;
+            for DISALLOWED in NO_REPEATERS {
+                if com == DISALLOWED {
+                    dont_add = true;
+                    break;
+                }
+            }
+            if !dont_add {
+                full_command = format!("{}; {}", full_command, com);
+            }
+        }
+
+        full_command = format!("{}; {}", full_command, new_command);
+        let command: &str = &full_command;
+
+        println!("Executed command: {}", command);
 
         let mut resulting_lines: Vec<String> = Vec::<String>::new();
 
@@ -151,6 +187,11 @@ impl SSHClient {
                 }
                 // Now that all error-prone areas are covered, add the result to the return vector
                 resulting_lines.push(result);
+                
+                // Now check if it needs adding to the command list
+                if add_to_command_list {
+                    self.previous_commands.push(new_command.to_string());
+                }
 
                 Ok(resulting_lines)
             }
@@ -169,10 +210,76 @@ impl HiddenObjectMethods for SSHClient {
             //Only if it has been established that everything is okay should things go
         }
 
+        // If these values have been changed, it means a 'login' button has been filled in
         if  self.login_field_values.0 != 0
              && self.login_field_values.1 != 0
              && self.login_field_values.2 != 0 {
-            //TODO: THIS
+
+            // First, get the values from the text boxes, using the login_field_values as IDs
+            let mut hn: String = String::new();
+            let mut un: String = String::new();
+            let mut pw: String = String::new();
+          
+            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.0) {
+                hn = obj.get_text()
+                    .clone()
+                    .to_string();
+
+                obj.clear_text();
+            }
+
+            //Username
+            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.1) {
+                un = obj.get_text()
+                    .clone()
+                    .to_string();
+
+                obj.clear_text();
+            }
+
+            //Password
+            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.2) {
+                pw = obj.get_text()
+                    .clone()
+                    .to_string();
+
+                obj.clear_text();
+            }
+            
+            //Confirm they all have a value
+            if (hn == "" || un == "" || pw == "") {
+                //TODO: Send logger message
+                println!("There is a missing piece of info before attempting to log in.");
+            } else {
+                //Now attempt handshake
+                let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(hn, un, pw);
+
+                match ssh_result {
+                    Ok(num) => { /* Great! TODO: Send a logger message */}
+                    Err(err_code) => {
+                        match err_code {
+                            HandshakeErrorCode::TcpFail => {
+                                println!("Failed to establish a TCP Connection");
+                            }
+                            HandshakeErrorCode::SessionFail => {
+                                println!("Failed to establish a new session");
+                            }
+                            HandshakeErrorCode::HandshakeFail => {
+                                println!("Failed to create a link between a TCP Connection and a Session");
+                            }
+                            HandshakeErrorCode::LoginAuthFail => {
+                                println!("Failed to authenticate a login");
+                            }
+                            HandshakeErrorCode::SessionAuthFail => {
+                                println!("Failed to authenticate a Session");
+                            }
+                        } 
+                    }
+                }
+            }
+            
+            //Set back to zero so it doenst endlessly occur
+            self.login_field_values = (0,0,0);
         }
     }
 }

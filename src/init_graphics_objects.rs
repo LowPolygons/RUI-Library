@@ -8,18 +8,20 @@ use crate::window_objects::screen_decoration_object::ScreenDecoration;
 use crate::window_objects::text_block_object::TextBlock;
 use crate::window_objects::logger_object::Logger;
 
+use crate::window_objects::window_object_center::HiddenManager;
+use crate::window_objects::sshclient_object::SSHClient;
+
 // Only Interactables 
 use crate::window_objects::window_object_center::OnlyInteractable;
 use crate::window_objects::button_object::Button;
 use crate::window_objects::textbox_object::TextBox;
 
 // Any Button Implementations Go Here
-use crate::interactable_implementations::button_implementations::ToggleRaytracer;
 use crate::interactable_implementations::button_implementations::SSHTest;
 
 // Any Textbox Implementations Go Here
 use crate::interactable_implementations::textbox_implementation::AddLogLine;
-        
+use crate::interactable_implementations::textbox_implementation::ExecuteCommand;       
 /*--===--===--===--===--===--===--===--===--===--*\
 |           Defining graphics Components          v
 |
@@ -29,7 +31,7 @@ use crate::interactable_implementations::textbox_implementation::AddLogLine;
 |                                                 ^
 \*--===--===--===--===--===--===--===--===--===--*/
 
-pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32, NonInteractable>, only_interactable_components: &mut BTreeMap<u32, OnlyInteractable>) {
+pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32, NonInteractable>, only_interactable_components: &mut BTreeMap<u32, OnlyInteractable>, hidden_components: &mut BTreeMap<u32, HiddenManager>) {
     only_interactable_components.insert(71, OnlyInteractable::TextBox(
         TextBox::new(20.0, 20.0, 310.0, 50.0,
             Color::new(0.0,0.0,0.0,1.0),
@@ -83,7 +85,7 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             Color::new(1.0, 1.0, 1.0, 1.0),
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Enter Command".to_string(),
-            Box::new(AddLogLine),
+            Box::new(ExecuteCommand),
             TextBlock::new(30.0, 280.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0)
         )
     ));
@@ -91,4 +93,6 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
     non_interactable_components.insert(0,  NonInteractable::ScreenDecoration(ScreenDecoration::new(9.0, 9.0, 332.0, 882.0, Color::new(0.2, 0.2, 0.2, 1.0))));
     non_interactable_components.insert(33, NonInteractable::ScreenDecoration(ScreenDecoration::new(349.0, 9.0, 1082.0, 882.0, Color::new(0.4, 0.2, 0.2, 1.0))));
     non_interactable_components.insert(50, NonInteractable::Logger(Logger::new(350.0, 10.0, 1080.0, 880.0, 5.0, 20.0, Color::new(1.0, 1.0, 1.0, 1.0), ">>> ".to_string())));
+
+    hidden_components.insert(100, HiddenManager::SSHClient(SSHClient::new()));
 }

@@ -10,6 +10,7 @@ use std::collections::BTreeMap;
 
 use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::text_block_object::TextBlock;
+use crate::window_objects::window_object_center::HiddenManager;
 
 pub struct TextBox {
     x: f32,
@@ -81,12 +82,16 @@ impl TextBox {
         self.pressed_down
     }
 
-    pub fn on_interact(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>) -> Option<BTreeMap<u32, NonInteractable>> {
-        self.on_enter.on_enter(textbox_id, win_man_parts, &self.text_container.get_text())
+    pub fn on_interact(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
+        self.on_enter.on_enter(textbox_id, win_man_parts, win_man_hiddens, &self.text_container.get_text())
     }
 
     pub fn clear_text(&mut self) {
         self.text_container.set_text("".to_string());
+    }
+
+    pub fn get_text(&self) -> String {
+        (self.text_container.get_text().clone())
     }
 }
 

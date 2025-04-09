@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 
 use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::window_object_center::OnlyInteractable;
+use crate::window_objects::window_object_center::HiddenManager;
 
 use crate::managers::main_window_manager::WindowManager;
 
@@ -39,16 +40,19 @@ impl UserInteractionManagerMethods for UserInteractionManager {
     fn update(&mut self, win_man: &mut WindowManager) {
         self.mouse_position = mouse_position();
               
-        let no_interactables: BTreeMap<u32, NonInteractable> = win_man.get_non_interactable_graphics_components(); 
-        let only_interactables: &mut BTreeMap<u32, OnlyInteractable> = win_man.get_only_interactable_graphics_components();
-        
+        let no_interactables: BTreeMap<u32, NonInteractable> = win_man.get_non_interactable_graphics_components();
+        let mutable_references: (&mut BTreeMap<u32, OnlyInteractable>, &mut BTreeMap<u32, HiddenManager>) = win_man.get_pair_of_graphics_components();
+
+        //let only_interactables: &mut BTreeMap<u32, OnlyInteractable> = win_man.get_only_interactable_graphics_components();
+        //let hidden_objects: &mut BTreeMap<u32, HiddenManager> = win_man.get_hidden_graphics_components();
+
         let mut news: BTreeMap<u32, NonInteractable> = BTreeMap::new();
         let mut has_changed: bool = false;
         let mut enter_press_failsafe: bool = false;
  
 
         //TODO: IT WOULD BE NICE TO MAKE THIS NEATER AND NOT BE 8-indent levels at peak
-        for (id, component) in only_interactables {
+        for (id, component) in mutable_references.0 {
             match component {
                 OnlyInteractable::Button(obj) => {
                     obj.set_idle();
@@ -61,7 +65,7 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                             obj.set_depressed();
                             
                             if !obj.get_pressed_down() {
-                                let result: Option<BTreeMap<u32, NonInteractable>> = obj.on_interact(&id, no_interactables.clone());
+                                let result: Option<BTreeMap<u32, NonInteractable>> = obj.on_interact(&id, no_interactables.clone(), mutable_references.1);
                                 
                                 obj.set_pressed_down(true);
 
@@ -110,7 +114,7 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                                 enter_press_failsafe = true;
                                 obj.set_pressed_down(false);
 
-                                let result: Option<BTreeMap<u32, NonInteractable>> = obj.on_interact(&id, no_interactables.clone());
+                                let result: Option<BTreeMap<u32, NonInteractable>> = obj.on_interact(&id, no_interactables.clone(), mutable_references.1);
 
                                 obj.clear_text();
 

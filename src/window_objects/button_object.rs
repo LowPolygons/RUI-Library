@@ -5,6 +5,8 @@ use crate::interactable_implementations::button_implementations::ButtonHandler;
 use std::collections::BTreeMap;
 use crate::window_objects::text_block_object::*;
 use crate::window_objects::window_object_center::NonInteractable;
+use crate::window_objects::window_object_center::HiddenManager;
+
 
 pub struct Button {
     x: f32,
@@ -66,8 +68,8 @@ impl Button {
         self.active_colour = self.depressed_colour.clone();
     }
 
-    pub fn on_interact(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>) -> Option<BTreeMap<u32, NonInteractable>> {
-        self.button_handler.on_click(button_id, win_man_parts)
+    pub fn on_interact(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
+        self.button_handler.on_click(button_id, win_man_parts, win_man_hiddens)
     }
 }
 

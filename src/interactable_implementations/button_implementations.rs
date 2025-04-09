@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 use std::collections::BTreeMap;
 
+use crate::window_objects::window_object_center::HiddenManager;
 use crate::window_objects::window_object_center::NonInteractable;
 
 // This is a trait that is used by the Buttons structure. Button methods should be on a per-button
@@ -11,13 +12,13 @@ use crate::window_objects::window_object_center::NonInteractable;
 
 pub trait ButtonHandler {
     // Buttons should be able to modify parts of the window that arent directly interactable by the user, hence the copy of the map for NonInteractables
-    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>) -> Option<BTreeMap<u32, NonInteractable>>;
+    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>>;
 }
 
 pub struct ToggleRaytracer;
 
 impl ButtonHandler for ToggleRaytracer {
-    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>) -> Option<BTreeMap<u32, NonInteractable>> {
+    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
         // The raytracer id will always be the button_id + 1         
       
         //Raytracer window block retrieved from the map
@@ -46,8 +47,11 @@ impl ButtonHandler for ToggleRaytracer {
 pub struct SSHTest;
 
 impl ButtonHandler for SSHTest {
-    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>) -> Option<BTreeMap<u32, NonInteractable>> {
-        //Make a new SSH_Manager
+    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
+               
+        if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
+            obj.update_login_field_values(71, 72, 73);
+        }
         None
     }
 }
