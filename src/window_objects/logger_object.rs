@@ -3,6 +3,8 @@ use macroquad::prelude::*;
 use crate::window_objects::window_object_center::WindowObjectMethods;
 use crate::window_objects::WIDEST_CHARACTER_PIXEL_WIDTH;
 
+use std::cmp;
+
 #[derive(Clone)]
 pub struct Logger {
     x: f32,
@@ -37,8 +39,7 @@ impl Logger {
 
     pub fn add_line(&mut self, inp: &str) {
         let mut input: String = inp.to_string();
-        //Line tag at the start of every line, but if a line needs to go onto the next, it doesn;t
-        //have a line tag
+
         let length_of_input: usize = input.len() + self.line_tag.len();
 
         let distance_from_edge: f32 = (self.w) - self.x_padding - WIDEST_CHARACTER_PIXEL_WIDTH;
@@ -50,20 +51,14 @@ impl Logger {
         let mut strings_to_add: Vec<String> = vec![String::new(); num_lines_to_add];
        
         input = self.line_tag.clone() + &input; 
-        strings_to_add = input.lines().map(|s| s.to_string()).collect();
-        
-        /*
-        for index in 0..num_lines_to_add {
-            let curr_length: usize = input.len();
-            
-            if curr_length > max_num_chars {
-                strings_to_add[index] = input[0..max_num_chars].to_string();
-                input = input[max_num_chars+1..input.len()].to_string();
-            } else {
-                strings_to_add[index] = input.clone()
-            }
-        }
-        */
+
+        //Split at line breaks, then as this is only a logger and not a command line, just truncate
+        //the output if it exceeds the screen size
+        strings_to_add = input
+            .lines()
+            .map(|s| s.to_string())
+            .map(|line| line[0..cmp::min(line.len(), max_num_chars)].to_string())
+            .collect::<Vec<String>>();
 
         for line in strings_to_add {
             self.lines.push(line.clone());
