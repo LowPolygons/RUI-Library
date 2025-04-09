@@ -87,10 +87,6 @@ impl WindowManagerMethods for WindowManager {
     fn update(&mut self) {
         clear_background(self.main_window_colour);
 
-        self.main_window_colour.r = (self.main_window_colour.r + 0.00001) % 1.0;
-        self.main_window_colour.g = (self.main_window_colour.g + 0.00001) % 1.0;
-        self.main_window_colour.b = (self.main_window_colour.b + 0.00001) % 1.0;
-
         // Then call the graphics components Updates 
         for (_id, component) in &mut self.non_interactable_components {
             component.update(); 

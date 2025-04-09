@@ -96,10 +96,10 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
     ));
 
     non_interactable_components.insert(0,  NonInteractable::ScreenDecoration(ScreenDecoration::new(9.0, 9.0, 332.0, 882.0, Color::new(0.2, 0.2, 0.2, 1.0))));
-    non_interactable_components.insert(33, NonInteractable::ScreenDecoration(ScreenDecoration::new(349.0, 49.0, 1082.0, 842.0, Color::new(0.4, 0.2, 0.2, 1.0))));
+    non_interactable_components.insert(33, NonInteractable::ScreenDecoration(ScreenDecoration::new(349.0, 49.0, 1082.0, 842.0, Color::new(0.2, 0.2, 0.2, 1.0))));
     non_interactable_components.insert(50, NonInteractable::Logger(Logger::new(350.0, 50.0, 1080.0, 840.0, 5.0, 20.0, Color::new(1.0, 1.0, 1.0, 1.0), "".to_string())));
 
-    non_interactable_components.insert(51, NonInteractable::TextBlock(TextBlock::new(829.0, 33.0, Color::new(0.4, 0.2, 0.2, 1.0), "Logger".to_string(), 46.0)));
+    non_interactable_components.insert(51, NonInteractable::TextBlock(TextBlock::new(829.0, 33.0, Color::new(0.05, 0.05, 0.05, 1.0), "Logger".to_string(), 46.0)));
 
     hidden_components.insert(100, HiddenManager::SSHClient(SSHClient::new()));
 }

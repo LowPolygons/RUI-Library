@@ -87,6 +87,10 @@ impl TextboxMethod for ExecuteCommand {
                         }
                     }
                 }
+            } else {
+                if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) {
+                    log_obj.add_line("[SSH WARNING] Please log in before running commands");
+                }
             }
         }
 
