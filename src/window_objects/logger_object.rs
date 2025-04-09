@@ -41,27 +41,29 @@ impl Logger {
         //have a line tag
         let length_of_input: usize = input.len() + self.line_tag.len();
 
-        let distance_from_edge: f32 = (self.x + self.w) - self.x_padding - WIDEST_CHARACTER_PIXEL_WIDTH;
+        let distance_from_edge: f32 = (self.w) - self.x_padding - WIDEST_CHARACTER_PIXEL_WIDTH;
 
         let max_num_chars: usize = (distance_from_edge / WIDEST_CHARACTER_PIXEL_WIDTH).floor() as usize;
-
+        println!("{}", max_num_chars);
 
         let num_lines_to_add: usize = ((length_of_input as f32) / (max_num_chars as f32)).ceil() as usize;
         let mut strings_to_add: Vec<String> = vec![String::new(); num_lines_to_add];
        
-
         input = self.line_tag.clone() + &input; 
+        strings_to_add = input.lines().map(|s| s.to_string()).collect();
         
+        /*
         for index in 0..num_lines_to_add {
             let curr_length: usize = input.len();
             
-            if curr_length >= self.max_num_chars {
-                strings_to_add[index] = input[0..curr_length].to_string();
-                input = input[self.max_num_chars+1..input.len()].to_string();
+            if curr_length > max_num_chars {
+                strings_to_add[index] = input[0..max_num_chars].to_string();
+                input = input[max_num_chars+1..input.len()].to_string();
             } else {
                 strings_to_add[index] = input.clone()
             }
         }
+        */
 
         for line in strings_to_add {
             self.lines.push(line.clone());

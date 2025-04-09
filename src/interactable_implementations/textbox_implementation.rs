@@ -4,6 +4,7 @@ use std::collections::BTreeMap;
 use crate::window_objects::window_object_center::HiddenManager;
 use crate::window_objects::window_object_center::NonInteractable;
 
+const MAX_LOGGER_LINE_LENGTH: usize = 1000;
 // This is a trait that is used by the Textbox structure. Button methods should be on a per-button
 // basis, and as a result they need a way to have one implemented method for on press for a general
 // button, but also a method individually.
@@ -50,29 +51,32 @@ pub struct ExecuteCommand;
 
 impl TextboxMethod for ExecuteCommand {
     fn on_enter(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> { 
+        let mut clone_of_parts = win_man_parts.clone();
+
         if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
-
-            /*First re-run all previosu valid commands
-            let valid_previous_commands: Vec<String> = obj.get_previous_commands();
-
-            for command in valid_previous_commands {
-                let _ = obj.execute_command(&command, false);
-            }*/
 
             let result: Result<Vec<String>, String> = obj.execute_command(text, true);
 
             match result {
                 Ok(val) => {
-                    for l in val {
-                        println!("{}", l);
+                    if let Some(NonInteractable::Logger(obj)) = clone_of_parts.get_mut(&50) {
+                        for l in val {
+                            if l.len() > MAX_LOGGER_LINE_LENGTH {
+                                obj.add_line(&l[0..MAX_LOGGER_LINE_LENGTH]);
+                            } else {
+                                obj.add_line(&l)
+                            }
+                        }
                     }
                 }
                 Err(e) => {
-                    println!("Error {}", e);
+                    if let Some(NonInteractable::Logger(obj)) = clone_of_parts.get_mut(&50) {
+                        obj.add_line(&format!("Execution Error: {}", &e));
+                    }
                 }
             }
         }
 
-        None
+        Some(clone_of_parts)
     }
 }

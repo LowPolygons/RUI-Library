@@ -10,7 +10,7 @@ use crate::window_objects::window_object_center::HiddenObjectMethods;
 use crate::window_objects::textbox_object::*;
 use crate::window_objects::button_object::*;
 
-const NO_REPEATERS: [&str; 3] = ["ls", "head", "tail"];
+const NO_REPEATERS: [&str; 3] = ["ls", "head ", "tail "];
 // Whichever button calls the make_ssh_handshake method should handle these errors for eg give
 // useful error messages to a logger
 pub enum HandshakeErrorCode {
@@ -130,7 +130,7 @@ impl SSHClient {
         for com in &self.previous_commands {
             let mut dont_add: bool = false;
             for DISALLOWED in NO_REPEATERS {
-                if com == DISALLOWED {
+                if com.contains(DISALLOWED) {
                     dont_add = true;
                     break;
                 }
