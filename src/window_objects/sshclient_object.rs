@@ -32,9 +32,14 @@ pub struct SSHClient {
     // fails, to prevent the whole program closing this will block it
     session_still_valid: bool,
 
+
+    have_logged_in: bool,
+    
     login_field_values: (u32, u32, u32),
 
     previous_commands: Vec<String>,
+
+    logger_id: u32,
 }
 
 impl SSHClient {
@@ -47,20 +52,25 @@ impl SSHClient {
             tcp_stream: None,
             session: None,
 
+            have_logged_in: false,
             session_still_valid: true,
 
             login_field_values: (0, 0, 0),
 
-
             previous_commands: Vec::<String>::new(),
-            //TODO: THIS logger_id: u32
+            //TODO: THIS 
+            logger_id: 0,
         }
+    }
+
+    pub fn get_login_status(&self) -> bool {
+        self.have_logged_in
     }
 
     pub fn update_login_field_values(&mut self, one: u32, two: u32, three: u32) {
         self.login_field_values = (one, two, three);
     }
-
+    
     pub fn make_ssh_handshake(&mut self, rs: String, un: String, pw: String) -> Result<i8, HandshakeErrorCode> {
         self.remote_server = rs;
         self.username = un;
@@ -105,6 +115,7 @@ impl SSHClient {
 
         self.session = Some(session_attempt);
         self.tcp_stream = Some(tcp_stream_attempt);
+        self.have_logged_in = true;
         Ok(1)
     }
     
@@ -178,9 +189,11 @@ impl SSHClient {
 }
 
 impl HiddenObjectMethods for SSHClient {
-    fn init(&mut self) {}
+    fn init(&mut self) {
+        self.logger_id = 50; 
+    }
 
-    fn update(&mut self, only: &mut BTreeMap<u32, OnlyInteractable>, _none: &mut BTreeMap<u32, NonInteractable>) {
+    fn update(&mut self, only: &mut BTreeMap<u32, OnlyInteractable>, none: &mut BTreeMap<u32, NonInteractable>) {
         if self.session_still_valid {
             //Only if it has been established that everything is okay should things go
         }
@@ -228,29 +241,31 @@ impl HiddenObjectMethods for SSHClient {
             } else {
                 //Now attempt handshake
                 let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(hn, un, pw);
-
-                match ssh_result {
-                    Ok(_) => {
-                        /* Great! TODO: Send a logger message */
-                    }
-                    Err(err_code) => {
-                        match err_code {
-                            HandshakeErrorCode::TcpFail => {
-                                println!("Failed to establish a TCP Connection");
-                            }
-                            HandshakeErrorCode::SessionFail => {
-                                println!("Failed to establish a new session");
-                            }
-                            HandshakeErrorCode::HandshakeFail => {
-                                println!("Failed to create a link between a TCP Connection and a Session");
-                            }
-                            HandshakeErrorCode::LoginAuthFail => {
-                                println!("Failed to authenticate a login");
-                            }
-                            HandshakeErrorCode::SessionAuthFail => {
-                                println!("Failed to authenticate a Session");
-                            }
-                        } 
+                
+                if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
+                    match ssh_result {
+                        Ok(_) => {
+                           log_obj.add_line(&format!("[SSH INFO] Successful SSH into {}", self.remote_server)); 
+                        }
+                        Err(err_code) => {
+                            match err_code {
+                                HandshakeErrorCode::TcpFail => {
+                                    log_obj.add_line("[SSH ERROR] Failed to establish a TCP Connection");
+                                }
+                                HandshakeErrorCode::SessionFail => {
+                                    log_obj.add_line("[SSH ERROR] Failed to establish a new session");
+                                }
+                                HandshakeErrorCode::HandshakeFail => {
+                                    log_obj.add_line("[SSH ERROR] Failed to create a link between a TCP Connection and a Session");
+                                }
+                                HandshakeErrorCode::LoginAuthFail => {
+                                    log_obj.add_line("[SSH ERROR] Failed to authenticate a login");
+                                }
+                                HandshakeErrorCode::SessionAuthFail => {
+                                    log_obj.add_line("[SSH ERROR] Failed to authenticate a Session");
+                                }
+                            } 
+                        }
                     }
                 }
             }

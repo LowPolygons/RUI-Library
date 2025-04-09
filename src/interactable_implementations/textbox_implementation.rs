@@ -16,6 +16,14 @@ pub trait TextboxMethod {
     fn on_enter(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>>;
 }
 
+
+pub struct DoNothing;
+
+impl TextboxMethod for DoNothing {
+    fn on_enter(&self, _t: &u32, _w: BTreeMap<u32, NonInteractable>, _i: &mut BTreeMap<u32, HiddenManager>, _e: &str) -> Option<BTreeMap<u32, NonInteractable>> {
+        None
+    }
+}
 pub struct AddLogLine;
 
 impl TextboxMethod for AddLogLine {
@@ -56,25 +64,27 @@ impl TextboxMethod for ExecuteCommand {
         let mut clone_of_parts = win_man_parts.clone();
 
         if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
-
-            let result: Result<Vec<String>, String> = obj.execute_command(text, true);
             
-            if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) {
+            if obj.get_login_status() {
+                let result: Result<Vec<String>, String> = obj.execute_command(text, true);
 
-                log_obj.add_line(&format!(">>> {}", &text));
+                if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) {
 
-                match result {
-                    Ok(val) => {
-                        for l in val {
-                            if l.len() > MAX_LOGGER_LINE_LENGTH {
-                                log_obj.add_line(&l[0..MAX_LOGGER_LINE_LENGTH]);
-                            } else {
-                                log_obj.add_line(&l)
+                   log_obj.add_line(&format!(">>> {}", &text));
+
+                    match result {
+                        Ok(val) => {
+                            for l in val {
+                                if l.len() > MAX_LOGGER_LINE_LENGTH {
+                                    log_obj.add_line(&l[0..MAX_LOGGER_LINE_LENGTH]);
+                               } else {
+                                    log_obj.add_line(&l)
+                                }
                             }
                         }
-                    }
-                    Err(e) => {
-                        log_obj.add_line(&format!("Execution Error: {}", &e));
+                        Err(e) => {
+                            log_obj.add_line(&format!("Execution Error: {}", &e));
+                        }
                     }
                 }
             }

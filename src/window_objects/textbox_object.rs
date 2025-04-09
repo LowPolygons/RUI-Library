@@ -35,10 +35,12 @@ pub struct TextBox {
     previous_char: char,
     delete_failsafe: bool,
     first_frame_failsafe: bool,
+
+    enter_clears_text: bool,
 }
 
 impl TextBox {
-    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, idle: Color, hover: Color, depressed: Color, default: String, on_enter_: Box<dyn TextboxMethod>, text_block: TextBlock, pm: bool) -> Self {
+    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, idle: Color, hover: Color, depressed: Color, default: String, on_enter_: Box<dyn TextboxMethod>, text_block: TextBlock, pm: bool, ect: bool) -> Self {
         TextBox {
             x: x_,
             y: y_,
@@ -56,6 +58,7 @@ impl TextBox {
             delete_failsafe: false,
             first_frame_failsafe: false,
             password_mode: pm,
+            enter_clears_text: ect,
         } 
     }
     pub fn get_intersection_values(&self) -> (f32, f32, f32, f32) {
@@ -87,7 +90,9 @@ impl TextBox {
     }
 
     pub fn clear_text(&mut self) {
-        self.text_container.set_text("".to_string());
+        if self.enter_clears_text {
+            self.text_container.set_text("".to_string());
+        }
     }
 
     pub fn get_text(&self) -> String {
