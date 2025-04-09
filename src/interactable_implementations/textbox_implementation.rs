@@ -19,9 +19,11 @@ pub trait TextboxMethod {
 pub struct AddLogLine;
 
 impl TextboxMethod for AddLogLine {
-    fn on_enter(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> {
+    fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, _win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> {
         // The raytracer id will always be the button_id + 1         
-      
+     
+        //TODO: Make this a get_mut as [] panics
+        
         //Raytracer window block retrieved from the map
         let mut logger: NonInteractable = win_man_parts[&50].clone();
         //The input isn't directly modifyable, therefore make a clone
@@ -50,14 +52,13 @@ impl TextboxMethod for AddLogLine {
 pub struct ExecuteCommand;
 
 impl TextboxMethod for ExecuteCommand {
-    fn on_enter(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> { 
+    fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> { 
         let mut clone_of_parts = win_man_parts.clone();
 
         if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
 
             let result: Result<Vec<String>, String> = obj.execute_command(text, true);
             
-
             if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) {
 
                 log_obj.add_line(&format!(">>> {}", &text));

@@ -7,9 +7,6 @@ use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::window_object_center::OnlyInteractable;
 use crate::window_objects::window_object_center::HiddenObjectMethods;
 
-use crate::window_objects::textbox_object::*;
-use crate::window_objects::button_object::*;
-
 const NO_REPEATERS: [&str; 3] = ["ls", "head ", "tail "];
 // Whichever button calls the make_ssh_handshake method should handle these errors for eg give
 // useful error messages to a logger
@@ -58,10 +55,6 @@ impl SSHClient {
             previous_commands: Vec::<String>::new(),
             //TODO: THIS logger_id: u32
         }
-    }
-
-    pub fn get_previous_commands(&mut self) -> Vec<String> {
-        self.previous_commands.clone()
     }
 
     pub fn update_login_field_values(&mut self, one: u32, two: u32, three: u32) {
@@ -126,8 +119,8 @@ impl SSHClient {
         
         for com in &self.previous_commands {
             let mut dont_add: bool = false;
-            for DISALLOWED in NO_REPEATERS {
-                if com.contains(DISALLOWED) {
+            for disallowed in NO_REPEATERS {
+                if com.contains(disallowed) {
                     dont_add = true;
                     break;
                 }
@@ -187,7 +180,7 @@ impl SSHClient {
 impl HiddenObjectMethods for SSHClient {
     fn init(&mut self) {}
 
-    fn update(&mut self, only: &mut BTreeMap<u32, OnlyInteractable>, none: &mut BTreeMap<u32, NonInteractable>) {
+    fn update(&mut self, only: &mut BTreeMap<u32, OnlyInteractable>, _none: &mut BTreeMap<u32, NonInteractable>) {
         if self.session_still_valid {
             //Only if it has been established that everything is okay should things go
         }
@@ -229,7 +222,7 @@ impl HiddenObjectMethods for SSHClient {
             }
             
             //Confirm they all have a value
-            if (hn == "" || un == "" || pw == "") {
+            if hn == "" || un == "" || pw == "" {
                 //TODO: Send logger message
                 println!("There is a missing piece of info before attempting to log in.");
             } else {
@@ -237,7 +230,9 @@ impl HiddenObjectMethods for SSHClient {
                 let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(hn, un, pw);
 
                 match ssh_result {
-                    Ok(num) => { /* Great! TODO: Send a logger message */}
+                    Ok(_) => {
+                        /* Great! TODO: Send a logger message */
+                    }
                     Err(err_code) => {
                         match err_code {
                             HandshakeErrorCode::TcpFail => {

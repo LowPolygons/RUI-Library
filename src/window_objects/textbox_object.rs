@@ -17,7 +17,6 @@ pub struct TextBox {
     y: f32,
     w: f32,
     h: f32,
-    text_colour: Color,
 
     idle_colour: Color,
     hover_colour: Color,
@@ -39,13 +38,12 @@ pub struct TextBox {
 }
 
 impl TextBox {
-    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, text_colour_: Color, idle: Color, hover: Color, depressed: Color, default: String, on_enter_: Box<dyn TextboxMethod>, text_block: TextBlock, pm: bool) -> Self {
+    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, idle: Color, hover: Color, depressed: Color, default: String, on_enter_: Box<dyn TextboxMethod>, text_block: TextBlock, pm: bool) -> Self {
         TextBox {
             x: x_,
             y: y_,
             w: w_,
             h: h_,
-            text_colour: text_colour_,
             idle_colour: idle,
             hover_colour: hover,
             depressed_colour: depressed,
@@ -93,7 +91,7 @@ impl TextBox {
     }
 
     pub fn get_text(&self) -> String {
-        (self.text_container.get_text().clone())
+        self.text_container.get_text().clone()
     }
 }
 

@@ -3,7 +3,6 @@ use std::collections::BTreeMap;
 
 // Non Interactables
 use crate::window_objects::window_object_center::NonInteractable;
-use crate::window_objects::raytracer_window_object::RaytracerWindow;
 use crate::window_objects::screen_decoration_object::ScreenDecoration;
 use crate::window_objects::text_block_object::TextBlock;
 use crate::window_objects::logger_object::Logger;
@@ -21,7 +20,8 @@ use crate::interactable_implementations::button_implementations::SSHTest;
 
 // Any Textbox Implementations Go Here
 use crate::interactable_implementations::textbox_implementation::AddLogLine;
-use crate::interactable_implementations::textbox_implementation::ExecuteCommand;       
+use crate::interactable_implementations::textbox_implementation::ExecuteCommand;      
+
 /*--===--===--===--===--===--===--===--===--===--*\
 |           Defining graphics Components          v
 |
@@ -34,7 +34,6 @@ use crate::interactable_implementations::textbox_implementation::ExecuteCommand;
 pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32, NonInteractable>, only_interactable_components: &mut BTreeMap<u32, OnlyInteractable>, hidden_components: &mut BTreeMap<u32, HiddenManager>) {
     only_interactable_components.insert(71, OnlyInteractable::TextBox(
         TextBox::new(20.0, 20.0, 310.0, 50.0,
-            Color::new(0.0,0.0,0.0,1.0),
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
             Color::new(0.7, 0.7, 0.7, 1.0),
@@ -47,7 +46,6 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
 
     only_interactable_components.insert(72, OnlyInteractable::TextBox(
         TextBox::new(20.0, 70.0, 310.0, 50.0,
-            Color::new(0.0,0.0,0.0,1.0),
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
             Color::new(0.7, 0.7, 0.7, 1.0),
@@ -60,7 +58,6 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
 
     only_interactable_components.insert(73, OnlyInteractable::TextBox(
         TextBox::new(20.0, 120.0, 310.0, 50.0,
-            Color::new(0.0,0.0,0.0,1.0),
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
             Color::new(0.7, 0.7, 0.7, 1.0),
@@ -83,7 +80,6 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
 
     only_interactable_components.insert(75, OnlyInteractable::TextBox(
         TextBox::new(20.0, 250.0, 310.0, 50.0,
-            Color::new(0.0,0.0,0.0,1.0),
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
             Color::new(0.7, 0.7, 0.7, 1.0),

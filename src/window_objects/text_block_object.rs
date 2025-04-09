@@ -32,10 +32,6 @@ impl TextBlock {
         self.text.clone()
     }
 
-    pub fn get_size(&self) -> f32 {
-        self.font_size.clone()
-    }
-
     pub fn get_pos(&self) -> (f32, f32) {
         (self.x.clone(), self.y.clone())
     }

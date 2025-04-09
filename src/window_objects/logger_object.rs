@@ -17,8 +17,6 @@ pub struct Logger {
     string_colour: Color,
     font_size: f32,
     line_tag: String,
-
-    max_num_chars: usize,
 }
 
 impl Logger {
@@ -33,28 +31,21 @@ impl Logger {
             string_colour: colour,
             font_size: size,
             line_tag: tag,
-            max_num_chars: 0,
         }
     }
 
     pub fn add_line(&mut self, inp: &str) {
         let mut input: String = inp.to_string();
 
-        let length_of_input: usize = input.len() + self.line_tag.len();
-
         let distance_from_edge: f32 = (self.w) - self.x_padding - WIDEST_CHARACTER_PIXEL_WIDTH;
 
         let max_num_chars: usize = (distance_from_edge / WIDEST_CHARACTER_PIXEL_WIDTH).floor() as usize;
-        println!("{}", max_num_chars);
 
-        let num_lines_to_add: usize = ((length_of_input as f32) / (max_num_chars as f32)).ceil() as usize;
-        let mut strings_to_add: Vec<String> = vec![String::new(); num_lines_to_add];
-       
         input = self.line_tag.clone() + &input; 
 
         //Split at line breaks, then as this is only a logger and not a command line, just truncate
         //the output if it exceeds the screen size
-        strings_to_add = input
+        let strings_to_add: Vec<String> = input
             .lines()
             .map(|s| s.to_string())
             .map(|line| line[0..cmp::min(line.len(), max_num_chars)].to_string())
@@ -80,7 +71,7 @@ impl WindowObjectMethods for Logger {
         if self.lines.len() > max_lines {
             lower_index = upper_index - max_lines - 1;
         }
-        let range_of_indexes: f32 = (upper_index - lower_index) as f32;
+
         let mut current: f32 = 0.0;
 
         for index in lower_index..upper_index {

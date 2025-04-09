@@ -18,7 +18,7 @@ pub trait ButtonHandler {
 pub struct ToggleRaytracer;
 
 impl ButtonHandler for ToggleRaytracer {
-    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
+    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, _win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
         // The raytracer id will always be the button_id + 1         
       
         //Raytracer window block retrieved from the map
@@ -47,7 +47,7 @@ impl ButtonHandler for ToggleRaytracer {
 pub struct SSHTest;
 
 impl ButtonHandler for SSHTest {
-    fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
+    fn on_click(&self, _button_id: &u32, _win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
                
         if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
             obj.update_login_field_values(71, 72, 73);

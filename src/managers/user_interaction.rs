@@ -135,8 +135,8 @@ impl UserInteractionManagerMethods for UserInteractionManager {
             }
         }
 
+        //To not be wasteful, only update this if something was updated
         if has_changed { 
-            println!("The state has changed");
             win_man.set_non_interactable_graphics_components(news);
         }
     }
