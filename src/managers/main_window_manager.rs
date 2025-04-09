@@ -56,15 +56,6 @@ impl WindowManager {
     pub fn set_non_interactable_graphics_components(&mut self, value: BTreeMap<u32, NonInteractable>) {
         self.non_interactable_components = value;
     }
-    
-    // Getter [and setter] for the Only Interactables as a Mutable reference, as Box<dyns> cannot implement copy or clone 
-    pub fn get_only_interactable_graphics_components(&mut self) -> &mut BTreeMap<u32, OnlyInteractable> {
-        &mut self.only_interactable_components
-    }
-
-    pub fn get_hidden_graphics_components(&mut self) -> &mut BTreeMap<u32, HiddenManager> {
-        &mut self.hidden_components
-    }
 
     pub fn get_pair_of_graphics_components(&mut self) -> (&mut BTreeMap<u32, OnlyInteractable>, &mut BTreeMap<u32, HiddenManager>) {
         (&mut self.only_interactable_components, &mut self.hidden_components)
