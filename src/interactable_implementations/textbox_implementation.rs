@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use crate::window_objects::window_object_center::HiddenManager;
 use crate::window_objects::window_object_center::NonInteractable;
 
-const MAX_LOGGER_LINE_LENGTH: usize = 1000;
+const MAX_LOGGER_LINE_LENGTH: usize = 99999;
 // This is a trait that is used by the Textbox structure. Button methods should be on a per-button
 // basis, and as a result they need a way to have one implemented method for on press for a general
 // button, but also a method individually.
@@ -70,7 +70,7 @@ impl TextboxMethod for ExecuteCommand {
 
                 if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) {
 
-                   log_obj.add_line(&format!(">>> {}", &text));
+                    log_obj.add_line(&format!(">>> {}", &text));
 
                     match result {
                         Ok(val) => {
@@ -85,6 +85,10 @@ impl TextboxMethod for ExecuteCommand {
                         Err(e) => {
                             log_obj.add_line(&format!("Execution Error: {}", &e));
                         }
+                    }                    
+                    // If the command was 'clear', clear the log
+                    if text == "clear" {
+                        log_obj.clear_lines(); 
                     }
                 }
             } else {

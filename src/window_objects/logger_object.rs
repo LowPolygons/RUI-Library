@@ -33,7 +33,11 @@ impl Logger {
             line_tag: tag,
         }
     }
-
+    
+    pub fn clear_lines(&mut self) {
+        self.lines = Vec::<String>::new();
+    }
+    
     pub fn add_line(&mut self, inp: &str) {
         let mut input: String = inp.to_string();
 
@@ -65,7 +69,7 @@ impl WindowObjectMethods for Logger {
     fn update(&mut self) {
         //The font size is how tall the characters are
         let max_lines: usize = (self.h / (self.font_size + 2.0)).floor() as usize;
-        let mut lower_index: usize = 0;
+    let mut lower_index: usize = 0;
         let upper_index: usize = self.lines.len();
       
         if self.lines.len() > max_lines {

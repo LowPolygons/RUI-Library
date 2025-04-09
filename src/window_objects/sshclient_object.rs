@@ -7,7 +7,7 @@ use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::window_object_center::OnlyInteractable;
 use crate::window_objects::window_object_center::HiddenObjectMethods;
 
-const NO_REPEATERS: [&str; 3] = ["ls", "head ", "tail "];
+const NO_REPEATERS: [&str; 4] = ["ls", "head ", "tail ", "pwd"];
 // Whichever button calls the make_ssh_handshake method should handle these errors for eg give
 // useful error messages to a logger
 pub enum HandshakeErrorCode {
