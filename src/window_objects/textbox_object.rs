@@ -30,7 +30,8 @@ pub struct TextBox {
     on_enter: Box<dyn TextboxMethod>,
 
     text_container: TextBlock,
-
+    
+    password_mode: bool,
     //This is for preventing character duplication
     previous_char: char,
     delete_failsafe: bool,
@@ -38,7 +39,7 @@ pub struct TextBox {
 }
 
 impl TextBox {
-    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, text_colour_: Color, idle: Color, hover: Color, depressed: Color, default: String, on_enter_: Box<dyn TextboxMethod>, text_block: TextBlock) -> Self {
+    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, text_colour_: Color, idle: Color, hover: Color, depressed: Color, default: String, on_enter_: Box<dyn TextboxMethod>, text_block: TextBlock, pm: bool) -> Self {
         TextBox {
             x: x_,
             y: y_,
@@ -56,6 +57,7 @@ impl TextBox {
             previous_char: '\0',
             delete_failsafe: false,
             first_frame_failsafe: false,
+            password_mode: pm,
         } 
     }
     pub fn get_intersection_values(&self) -> (f32, f32, f32, f32) {
@@ -100,6 +102,7 @@ impl WindowObjectMethods for TextBox {
     fn init(&mut self) {
         //Need to get text working
         self.text_container.init();
+        self.text_container.set_password_mode(self.password_mode);
     }
 
     fn update(&mut self) {
@@ -152,7 +155,7 @@ impl WindowObjectMethods for TextBox {
         }
         
         if self.text_container.get_text() == "" {
-            self.text_container.empty_update(&self.default_text);
+            self.text_container.empty_update(&self.default_text, true);
         } else {
             //TODO: do some maths to calculate how many characters you can display of the text so
             
@@ -166,7 +169,7 @@ impl WindowObjectMethods for TextBox {
             if string.len() <= max_num_chars {
                 self.text_container.update()
             } else {
-                self.text_container.empty_update(&string[string.len() - max_num_chars .. string.len()]);
+                self.text_container.empty_update(&string[string.len() - max_num_chars .. string.len()], false);
             }
         }
     }

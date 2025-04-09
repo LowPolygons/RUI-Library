@@ -12,7 +12,8 @@ use crate::managers::user_interaction::UserInteractionManagerMethods;
 use crate::managers::main_window_manager::WindowManagerMethods;
 use crate::managers::main_window_manager::WindowManager;
 
-#[macroquad::main("Raytracer")]
+// Trish
+#[macroquad::main("TRSSH")]
 async fn main() {
     //=-=-=-=== General Initialisation ===-=-=-=//
 

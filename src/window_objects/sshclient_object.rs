@@ -35,9 +35,6 @@ pub struct SSHClient {
     // fails, to prevent the whole program closing this will block it
     session_still_valid: bool,
 
-    // TODO: have the login button call a new method to be defined in here. This will send over the
-    // IDs for the objects (hardcoded) that need to have the text cleared. this will in the update
-    // function check the values arent all equal to zero, then clear the box and reset to zero 
     login_field_values: (u32, u32, u32),
 
     previous_commands: Vec<String>,
@@ -162,29 +159,14 @@ impl SSHClient {
                 let mut result = String::new();
                         
                 //This has a Result<usize, Err> where usize is the number of bytes
-                match channel.read_to_string(&mut result) {
-                    Ok(num_bytes) => {
-                        let mut info_line: String = "[SSH INFO] The result in bytes is ".to_string();
-                        info_line = info_line + &(num_bytes.to_string());
 
-                        resulting_lines.push(info_line.to_string());
-                    }
-                    Err(_) => {
-                        //As the Ok section returns a () in code, this has to type match therefore
-                        //just Err() is returning a Result. Doing this prevents that
-                        return Err("[SSH ERROR] The channel was unable to read the result of your command.".to_string());
-                    }
-                }
+                //? is propogating the error upwards to higher dimensions (wherever called the function) to handle it
+                channel.read_to_string(&mut result)
+                    .map_err(|_| "[SSH ERROR] The channel was unable to read the result of your command.".to_string())?;
 
-                match channel.wait_close() {
-                    Ok(()) => {
-                        let info_line: &str = "[SSH INFO (temp)] Graceful channel closure";
-                        resulting_lines.push(info_line.to_string());
-                    }
-                    Err(_) => {
-                        return Err("[SSH ERROR] The channel was unable to gracefully close.".to_string());
-                    }
-                }
+                channel.wait_close()
+                    .map_err(|_| "[SSH ERROR] The channel was unable to gracefully close.".to_string())?;
+
                 // Now that all error-prone areas are covered, add the result to the return vector
                 resulting_lines.push(result);
                 
@@ -278,7 +260,7 @@ impl HiddenObjectMethods for SSHClient {
                 }
             }
             
-            //Set back to zero so it doenst endlessly occur
+            //Set back to zero so it doesn't endlessly occur
             self.login_field_values = (0,0,0);
         }
     }

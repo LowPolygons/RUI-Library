@@ -89,7 +89,9 @@ impl WindowObjectMethods for Logger {
         let mut current: f32 = 0.0;
 
         for index in lower_index..upper_index {
-            draw_text(&self.lines[index], self.x + self.x_padding, (self.y + self.font_size*range_of_indexes) - current*self.font_size, self.font_size, self.string_colour);
+            let how_high_up: f32 = (upper_index - index) as f32;
+
+            draw_text(&self.lines[index], self.x + self.x_padding, (self.y + self.h) - self.font_size /* <- padding */ - how_high_up*self.font_size, self.font_size, self.string_colour);
 
             current = current + 1.0;
         }

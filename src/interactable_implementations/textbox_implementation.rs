@@ -56,22 +56,24 @@ impl TextboxMethod for ExecuteCommand {
         if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
 
             let result: Result<Vec<String>, String> = obj.execute_command(text, true);
+            
 
-            match result {
-                Ok(val) => {
-                    if let Some(NonInteractable::Logger(obj)) = clone_of_parts.get_mut(&50) {
+            if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) {
+
+                log_obj.add_line(&format!(">>> {}", &text));
+
+                match result {
+                    Ok(val) => {
                         for l in val {
                             if l.len() > MAX_LOGGER_LINE_LENGTH {
-                                obj.add_line(&l[0..MAX_LOGGER_LINE_LENGTH]);
+                                log_obj.add_line(&l[0..MAX_LOGGER_LINE_LENGTH]);
                             } else {
-                                obj.add_line(&l)
+                                log_obj.add_line(&l)
                             }
                         }
                     }
-                }
-                Err(e) => {
-                    if let Some(NonInteractable::Logger(obj)) = clone_of_parts.get_mut(&50) {
-                        obj.add_line(&format!("Execution Error: {}", &e));
+                    Err(e) => {
+                        log_obj.add_line(&format!("Execution Error: {}", &e));
                     }
                 }
             }

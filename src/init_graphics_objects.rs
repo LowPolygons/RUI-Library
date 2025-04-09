@@ -40,7 +40,8 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Enter Hostname".to_string(),
             Box::new(AddLogLine),
-            TextBlock::new(30.0, 50.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0)
+            TextBlock::new(30.0, 50.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            false
         )
     ));
 
@@ -52,7 +53,8 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Enter Username".to_string(),
             Box::new(AddLogLine),
-            TextBlock::new(30.0, 100.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0)
+            TextBlock::new(30.0, 100.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            false
         )
     ));
 
@@ -64,7 +66,8 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Enter Password".to_string(),
             Box::new(AddLogLine),
-            TextBlock::new(30.0, 150.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0)
+            TextBlock::new(30.0, 150.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            true
         )
     ));
 
@@ -86,13 +89,14 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Enter Command".to_string(),
             Box::new(ExecuteCommand),
-            TextBlock::new(30.0, 280.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0)
+            TextBlock::new(30.0, 280.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            false
         )
     ));
 
     non_interactable_components.insert(0,  NonInteractable::ScreenDecoration(ScreenDecoration::new(9.0, 9.0, 332.0, 882.0, Color::new(0.2, 0.2, 0.2, 1.0))));
     non_interactable_components.insert(33, NonInteractable::ScreenDecoration(ScreenDecoration::new(349.0, 9.0, 1082.0, 882.0, Color::new(0.4, 0.2, 0.2, 1.0))));
-    non_interactable_components.insert(50, NonInteractable::Logger(Logger::new(350.0, 10.0, 1080.0, 880.0, 5.0, 20.0, Color::new(1.0, 1.0, 1.0, 1.0), ">>> ".to_string())));
+    non_interactable_components.insert(50, NonInteractable::Logger(Logger::new(350.0, 10.0, 1080.0, 880.0, 5.0, 20.0, Color::new(1.0, 1.0, 1.0, 1.0), "".to_string())));
 
     hidden_components.insert(100, HiddenManager::SSHClient(SSHClient::new()));
 }
