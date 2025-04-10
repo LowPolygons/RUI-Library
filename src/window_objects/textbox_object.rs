@@ -88,7 +88,12 @@ impl TextBox {
     pub fn on_interact(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
         self.on_enter.on_enter(textbox_id, win_man_parts, win_man_hiddens, &self.text_container.get_text())
     }
-
+    
+    // For when ti is absolutely necessary
+    pub fn force_clear_text(&mut self) {
+        self.text_container.set_text("".to_string());
+    }
+    // This is a standard method for when you press enter
     pub fn clear_text(&mut self) {
         if self.enter_clears_text {
             self.text_container.set_text("".to_string());

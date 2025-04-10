@@ -213,7 +213,7 @@ impl HiddenObjectMethods for SSHClient {
                     .clone()
                     .to_string();
 
-                obj.clear_text();
+                obj.force_clear_text();
             }
 
             //Username
@@ -222,7 +222,7 @@ impl HiddenObjectMethods for SSHClient {
                     .clone()
                     .to_string();
 
-                obj.clear_text();
+                obj.force_clear_text();
             }
 
             //Password
@@ -231,7 +231,7 @@ impl HiddenObjectMethods for SSHClient {
                     .clone()
                     .to_string();
 
-                obj.clear_text();
+                obj.force_clear_text();
             }
             
             //Confirm they all have a value
