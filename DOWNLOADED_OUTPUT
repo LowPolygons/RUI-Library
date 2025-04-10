@@ -1,0 +1,113 @@
+#*****************************************************************
+#************  stfc/ccp5  program  library  package  ** D ********
+#************  daresbury laboratory general purpose  *** L *******
+#*         **  classical molecular dynamics program  **** \ ******
+#* DL_POLY **  authors:   i.t.todorov   &   w.smith  ***** P *****
+#*         **  version:  025d9237 /  02 04 2025      ****** O ****
+#************  execution on          32 process(es)  ******* L ***
+#************  contributors' list:                   ******** Y **
+#************  ------------------------------------  *************
+#************  i.j.bush, h.a.boateng, r.davidchak,   *************
+#************  m.a.seaton, a.v.brukhno, a.m.elena,   *************
+#************  s.l.daraszewicz, g.khara, s.t.murphy  *************
+#************  j.madge, a.b.g.chalk, i.scivetti,     *************
+#************  j.wilkins, h.l.devereux, b.t.speake   *************
+#*****************************************************************
+
+#*** compiler: GCC version 12.3.0 ****
+
+
+#*******************************************************************************
+#** title:                                                                   ***
+#** Drop formation on hydrophic surface                                      ***
+#*******************************************************************************
+
+
+Software Params:
+  Verbosity: 1
+  Job time (s):   7200.0
+
+I/O Parameters:
+  I/O read method: parallel by using MPI-I/O
+  I/O readers: 8
+  I/O write method: parallel by using MPI-I/O
+  I/O writers: 32
+
+File outputs (if not default):
+
+Current Units Scheme:
+  Length units: dpd_l
+  Time units: dpd_t
+  Mass units: dpd_m
+  Charge units: internal_q
+  Energy units: dpd_e
+  Temperature units: dpd_temp
+  Current units: A
+  Angle units: rad
+  Pressure units: dpd_p
+  Force units: dpd_f
+  Velocity units: dpd_v
+  Power units: dpd_e/dpd_t
+  Surface Tension units: dpd_f/dpd_l
+  EMF units: dpd_e/internal_q
+
+System parameters:
+  Fixed simulation timestep (dpd_t):  1.00000E-02
+  Run Duration (steps): 100000
+  Rolling averages length (steps): 100
+  File output info:
+  -- Restart dumping interview (steps): 1000
+  -- Data printing interval (steps): 100
+  -- Statistics file interval (steps): 100
+  -- Extended field topology printing: OFF
+  Simulation temperature (dpd_temp):   1.0000
+  Permitted density variance (%):   3000.0
+
+Thermostat details:
+  Ensemble: NVT dpd (Dissipative Particle Dynamics)
+  DPD thermostat integration method: Shardlow's first order splitting (S1)
+
+Link cell:
+  Subcelling threshold density:   50.000
+  Cutoff padding (dpd_l):  4.00000E-02
+  Final link-cell decomposition (x,y,z):      6     9     6
+
+Forcefield Parameters:
+  Real space cutoff (dpd_l):   1.0000
+  VdWs: Tabulated
+  -- VdW cutoff (dpd_l):   1.0000
+
+Electrostatic Parameters:
+  Electrostatics: Disabled
+  -- Charge smearing: None
+
+
+Structural statistics:
+  Trajectory recording: ON
+  -- File start: 0
+  -- File interval: 100
+  -- Trajectory file detail: COORD
+
+#detailed topology opted out
+configuration file name:           Solid Wall
+selected image convention:     orthorhombic
+Simulation cell vectors [Ang]:
+       27.0000000000        0.0000000000        0.0000000000
+        0.0000000000       19.0000000000        0.0000000000
+        0.0000000000        0.0000000000       27.0000000000
+System volume:            13851.0000000     Ang^3
+
+#** all reading and connectivity checks done ***
+time elapsed since job start:        0.631 sec
+long-range correction for:
+  vdw energy(dpd_e):    0.000000E+00
+  vdw pressure(dpd_p):    0.000000E+00
+
+ # warning issued 150
+
+ #** warning - required export buffer size 13524 and actual: 11172 !!! ***
+
+
+ DL_POLY_5 terminated due to error    54
+
+ # error - outgoing transfer buffer size exceeded in export_atomic_data/positions

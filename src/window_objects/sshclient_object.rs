@@ -1,7 +1,9 @@
 use ssh2::Session;
 use std::io::prelude::*;
+
 use std::net::TcpStream;
 use std::collections::BTreeMap;
+use std::path::Path; 
 
 use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::window_object_center::OnlyInteractable;
@@ -118,7 +120,43 @@ impl SSHClient {
         self.have_logged_in = true;
         Ok(1)
     }
-    
+   
+    pub fn download_file(&mut self, filename: &str, directory: &str) -> Result<String, String> { //<Filename with directory if applicable, or error message
+        let current_session = self.session
+            .clone()
+            .unwrap();
+
+        //Attempt to create a SFTP session
+        let sftp_session = current_session.sftp()
+            .map_err(|_| {
+                self.session_still_valid = false;
+                "[SSH ERROR] Error establishing an SFTP session".to_string()
+            })?;
+
+        let target_file_name: String = format!("{}/{}", directory.trim_matches('\n'), filename);
+
+        println!("Downloading {}", target_file_name);
+
+        let local_file_name: String = format!("DOWNLOADED_{}", filename);
+
+        //Open the file 
+        let mut target_file = sftp_session.open(Path::new(&target_file_name))
+            .map_err(|_| "[SSH WARN] Problem creating file link".to_string())?;
+
+        //Read contents into vector of strings
+        let mut downloaded_content = Vec::<u8>::new();
+
+        target_file.read_to_end(&mut downloaded_content)
+            .map_err(|_| "[SSH WARN] There was a problem trying to download the file contents")?;
+
+        //Save the contents into the desired file
+        std::fs::write(&local_file_name, downloaded_content)
+            .map_err(|_| "[SSH WARN] Problem creating a local save file to store the data in")?;
+
+        //Hurray!
+        Ok(local_file_name)
+    }
+
     pub fn execute_command(&mut self, new_command: &str, add_to_command_list: bool) -> Result<Vec<String>, String> {
         let mut current_channel = self.session
             .clone()

@@ -21,7 +21,8 @@ use crate::interactable_implementations::button_implementations::SSHTest;
 // Any Textbox Implementations Go Here
 use crate::interactable_implementations::textbox_implementation::AddLogLine;
 use crate::interactable_implementations::textbox_implementation::DoNothing;
-use crate::interactable_implementations::textbox_implementation::ExecuteCommand;      
+use crate::interactable_implementations::textbox_implementation::ExecuteCommand;   
+use crate::interactable_implementations::textbox_implementation::DownloadFile;
 
 /*--===--===--===--===--===--===--===--===--===--*\
 |           Defining graphics Components          v
@@ -90,6 +91,20 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             "Enter Command".to_string(),
             Box::new(ExecuteCommand),
             TextBlock::new(30.0, 280.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            false,
+            true
+        )
+    ));
+
+
+    only_interactable_components.insert(76, OnlyInteractable::TextBox(
+        TextBox::new(20.0, 300.0, 310.0, 50.0,
+            Color::new(0.9, 0.9, 0.9, 1.0),
+            Color::new(1.0, 1.0, 1.0, 1.0),
+            Color::new(0.7, 0.7, 0.7, 1.0),
+            "Enter a file to download".to_string(),
+            Box::new(DownloadFile),
+            TextBlock::new(30.0, 330.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
             false,
             true
         )
