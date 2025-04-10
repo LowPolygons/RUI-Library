@@ -34,7 +34,6 @@ pub struct SSHClient {
     // fails, to prevent the whole program closing this will block it
     session_still_valid: bool,
 
-
     have_logged_in: bool,
     
     login_field_values: (u32, u32, u32),
@@ -138,6 +137,8 @@ impl SSHClient {
         println!("Downloading {}", target_file_name);
 
         let local_file_name: String = format!("DOWNLOADED_{}", filename);
+
+        //TODO: Put a file size in the console and a warning for patience for larger files
 
         //Open the file 
         let mut target_file = sftp_session.open(Path::new(&target_file_name))
