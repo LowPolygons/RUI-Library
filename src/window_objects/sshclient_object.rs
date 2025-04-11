@@ -210,8 +210,15 @@ impl SSHClient {
                 full_command = format!("{}; {}", full_command, com);
             }
         }
-
-        full_command = format!("{}; {}", full_command, new_command);
+       
+        if new_command.contains("cd /") {
+            full_command = new_command.to_string();
+            self.previous_commands = Vec::new();
+        } else {
+            full_command = format!("{}; {}", full_command, new_command);
+        }
+        // If the new command contains 'cd /' it means no other previous cd command matters, and
+        // therefore can be cleared
         let command: &str = &full_command;
 
         println!("Executed command: {}", command);
