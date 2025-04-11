@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 
 use crate::window_objects::window_object_center::HiddenManager;
 use crate::window_objects::window_object_center::NonInteractable;
+use crate::window_objects::logger_object::Logger; 
 
 const MAX_LOGGER_LINE_LENGTH: usize = 99999;
 // This is a trait that is used by the Textbox structure. Button methods should be on a per-button
@@ -28,31 +29,13 @@ pub struct AddLogLine;
 
 impl TextboxMethod for AddLogLine {
     fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, _win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> {
-        // The raytracer id will always be the button_id + 1         
-     
-        //TODO: Make this a get_mut as [] panics
-        
-        //Raytracer window block retrieved from the map
-        let mut logger: NonInteractable = win_man_parts[&50].clone();
-        //The input isn't directly modifyable, therefore make a clone
-        let mut clone_of_parts = win_man_parts.clone();
+        let mut clone_of_parts = win_man_parts.clone();       
 
-        // Using ref (mainly used in match statements) means raytracer_window_object isn't consumed by the different statements
-        match logger {
-            // Internal modify of the render status
-            NonInteractable::RaytracerWindow(ref _obj) => {}
-
-            // Need th(is)(ese) or the code won't run
-            NonInteractable::ScreenDecoration(ref _obj) => {}
-            NonInteractable::TextBlock(ref _obj) => {}
-            NonInteractable::Logger(ref mut obj) => {
-                obj.add_line(text);
-            }
+        if let Some(NonInteractable::Logger(logger)) = clone_of_parts.get_mut(&50) {
+            //The input isn't directly modifyable, therefore make a clone
+            logger.add_line(text);
         }
         
-        // Insert both adds and modifies
-        clone_of_parts.insert(50, logger);
-
         Some(clone_of_parts)
     }
 }

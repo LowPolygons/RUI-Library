@@ -173,9 +173,6 @@ impl WindowObjectMethods for TextBox {
         if self.text_container.get_text() == "" {
             self.text_container.empty_update(&self.default_text, true);
         } else {
-            //TODO: do some maths to calculate how many characters you can display of the text so
-            
-            //Added the WIDEST_CHARACTER_PIXEL_WIDTH so it has a 1 character padding
             let distance_from_edge: f32 = (self.x + self.w) - self.text_container.get_pos().0 - WIDEST_CHARACTER_PIXEL_WIDTH;
 
             let max_num_chars: usize = (distance_from_edge / WIDEST_CHARACTER_PIXEL_WIDTH).floor() as usize;

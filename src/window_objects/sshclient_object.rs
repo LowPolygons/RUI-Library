@@ -60,7 +60,7 @@ impl SSHClient {
             login_field_values: (0, 0, 0),
 
             previous_commands: Vec::<String>::new(),
-            //TODO: THIS 
+            
             logger_id: 0,
         }
     }
@@ -138,9 +138,7 @@ impl SSHClient {
         println!("Downloading {}", target_file_name);
 
         let local_file_name: String = format!("{}", filename);
-
-        //TODO: Put a file size in the console and a warning for patience for larger files
-
+        
         //Open the file 
         let mut target_file = sftp_session.open(Path::new(&target_file_name))
             .map_err(|_| "[SSH WARN] Problem creating file link".to_string())?;
@@ -301,8 +299,9 @@ impl HiddenObjectMethods for SSHClient {
             
             //Confirm they all have a value
             if hn == "" || un == "" || pw == "" {
-                //TODO: Send logger message
-                println!("There is a missing piece of info before attempting to log in.");
+                if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
+                    log_obj.add_line("There is a missing piece of info before attempting to log in.");
+                }
             } else {
                 //Now attempt handshake
                 let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(hn, un, pw);

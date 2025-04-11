@@ -26,7 +26,6 @@ impl RaytracerWindow {
             h: h_,
             colour: c_,
            
-            //TODO: AMEND AS
             render: false,
             image_object: Image::gen_image_color(w_ as u16, h_ as u16, c_),
         }
@@ -52,7 +51,6 @@ impl WindowObjectMethods for RaytracerWindow {
         if self.render {
             let mut rng = rng();
        
-            //TODO: AMEND AS
             for y_pixel in 0..(self.h as i32){
                 for x_pixel in 0..(self.w as i32) {
                     let r: f32 = (rng.random_range(1..=255) as f32 / 255.0) as f32;

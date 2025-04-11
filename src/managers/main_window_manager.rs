@@ -92,14 +92,11 @@ impl WindowManagerMethods for WindowManager {
             component.update(); 
         }
 
-        //println!("Frame");
         for (_id, component) in &mut self.only_interactable_components {
             component.update(); 
         }
 
         for (_id, component) in &mut self.hidden_components {
-            // TODO: Amend so that it passes in a mutable reference to both interac types so that
-            // it can then support simultaneous updating
             component.update(&mut self.only_interactable_components, &mut self.non_interactable_components);
         }
     }
