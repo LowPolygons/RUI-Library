@@ -37,10 +37,11 @@ pub struct TextBox {
     first_frame_failsafe: bool,
 
     enter_clears_text: bool,
+    enter_removes_focus: bool,
 }
 
 impl TextBox {
-    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, idle: Color, hover: Color, depressed: Color, default: String, on_enter_: Box<dyn TextboxMethod>, text_block: TextBlock, pm: bool, ect: bool) -> Self {
+    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, idle: Color, hover: Color, depressed: Color, default: String, on_enter_: Box<dyn TextboxMethod>, text_block: TextBlock, pm: bool, ect: bool, erf: bool) -> Self {
         TextBox {
             x: x_,
             y: y_,
@@ -59,6 +60,7 @@ impl TextBox {
             first_frame_failsafe: false,
             password_mode: pm,
             enter_clears_text: ect,
+            enter_removes_focus: erf,
         } 
     }
     pub fn get_intersection_values(&self) -> (f32, f32, f32, f32) {
@@ -102,6 +104,10 @@ impl TextBox {
 
     pub fn get_text(&self) -> String {
         self.text_container.get_text().clone()
+    }
+
+    pub fn does_enter_remove_focus(&self) -> bool {
+        self.enter_removes_focus
     }
 }
 

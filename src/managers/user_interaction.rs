@@ -112,7 +112,10 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                         if is_key_down(KeyCode::Enter) && !is_mouse_button_down(MouseButton::Left) {
                             if !enter_press_failsafe {
                                 enter_press_failsafe = true;
-                                obj.set_pressed_down(false);
+
+                                if obj.does_enter_remove_focus() {
+                                    obj.set_pressed_down(false);
+                                }
 
                                 let result: Option<BTreeMap<u32, NonInteractable>> = obj.on_interact(&id, no_interactables.clone(), mutable_references.1);
 

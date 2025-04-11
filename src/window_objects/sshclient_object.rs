@@ -168,14 +168,7 @@ impl SSHClient {
         let mut full_command: String = "source ~/.bashrc".to_string(); 
         
         for com in &self.previous_commands {
-            let mut dont_add: bool = false;
-            for disallowed in NO_REPEATERS {
-                if com.contains(disallowed) {
-                    dont_add = true;
-                    break;
-                }
-            }
-            if !dont_add {
+            if com.contains("cd ") {
                 full_command = format!("{}; {}", full_command, com);
             }
         }
@@ -190,7 +183,6 @@ impl SSHClient {
         //Return type Result<Session, Error>
         match current_channel {
             Ok(ref mut channel) => {
-
                 //exec has return type Result<(), Error>
                 match channel.exec(command) {
                     Ok(()) => { /* Good! We can continue */}
