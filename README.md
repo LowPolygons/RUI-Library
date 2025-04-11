@@ -5,7 +5,7 @@ This is a small library built using Macroquad to provide a much more streamlined
 
 
 ## TRSSH 
-A program used to SSH onto a remote server, and provide easy tools to navigate around that session, and provide uploading and downloading functionality all in one place
+A program used to SSH onto a remote server (currently only supporting Username/Password authentication) , and provide easy tools to navigate around that session, and provide uploading and downloading functionality all in one place
 
 ### Recommended Setup 
 #### (If you have Rust and Cargo installed)
