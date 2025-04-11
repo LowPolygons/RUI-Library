@@ -4,6 +4,8 @@ mod window_objects;
 mod interactable_implementations;
 mod managers;
 
+mod assets; 
+
 mod init_graphics_objects;
 
 use crate::managers::user_interaction::UserInteractionManager;
@@ -23,7 +25,11 @@ fn TRSSH() -> Conf {
         window_height: 900,
         fullscreen: false,
         window_resizable: false,
-        //TODO: Icon {}
+        icon: Some(Icon {
+            small: assets::icon_data::SMALL_ICON,
+            medium: assets::icon_data::MEDIUM_ICON,
+            big: assets::icon_data::BIG_ICON,
+        }),
         ..Default::default()
     }
 }
