@@ -143,6 +143,8 @@ impl WindowObjectMethods for TextBox {
                         self.previous_char = '\0';
                     }
                 } else {
+                    self.previous_char = '\0';
+
                     if is_key_down(KeyCode::Backspace) {
                         if !self.delete_failsafe {
                             self.delete_failsafe = true;
