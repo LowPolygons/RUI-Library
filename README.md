@@ -7,7 +7,7 @@ The release available is a program build using RUI called TRSSH (Pronounced Tris
 ## TRSSH 
 A program used to SSH onto a remote server, and provide easy tools to navigate around that session, and provide uploading and downloading functionality all in one place
 
-### Recommended Setup
+### Recommended Setup (If you have Rust and Cargo installed)
 
 1) Clone the repository into your home directory in a folder called 'repos'
 
@@ -23,6 +23,7 @@ trssh.exe
 3) Navigate to your .bashrc and at the bottom you should add:
 
 ```
+export PATH="$PATH:[INSTALL_PATH_HERE]/RUI-Library/target/release"
 export PATH="~/scripts/:$PATH"
 
 chmod u+x $HOME/scripts/trssh
