@@ -137,7 +137,7 @@ impl SSHClient {
 
         println!("Downloading {}", target_file_name);
 
-        let local_file_name: String = format!("DOWNLOADED_{}", filename);
+        let local_file_name: String = format!("{}", filename);
 
         //TODO: Put a file size in the console and a warning for patience for larger files
 
