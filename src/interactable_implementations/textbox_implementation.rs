@@ -142,3 +142,44 @@ impl TextboxMethod for DownloadFile {
         Some(clone_of_parts)
     }
 }
+
+pub struct UploadFile;
+
+impl TextboxMethod for UploadFile {
+    fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> { 
+        let mut clone_of_parts = win_man_parts.clone();
+
+        //Confirm you have the logger and SSHCLient
+        if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
+            if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) { 
+                //Ensure it is logged in
+                if obj.get_login_status() {
+                    //Require the directory
+                    let directory: Result<Vec<String>, String> = obj.execute_command("pwd", false);
+                
+                    match directory {
+                        Ok(contains_directory) => {
+                            //Incase the list of previous commands print anything, have to get the last
+                            //item from the list of outputs
+                            let result: Result<String, String> = obj.upload_file(text, &contains_directory[contains_directory.len()-1]);
+                            
+                            match result {
+                                Ok(filepath) => {
+                                log_obj.add_line(&format!("Uploaded file to {}", filepath)); 
+                                }
+                                Err(e) => {
+                                    log_obj.add_line(&e);
+                                }
+                            }
+                        }
+                        Err(_) => {
+                            log_obj.add_line("[SSH ERROR] There was an issue attempting to upload the file");
+                        }
+                    }
+                }
+            }
+        }
+
+        Some(clone_of_parts)
+    }
+}

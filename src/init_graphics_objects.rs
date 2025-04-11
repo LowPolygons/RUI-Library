@@ -23,6 +23,7 @@ use crate::interactable_implementations::textbox_implementation::AddLogLine;
 use crate::interactable_implementations::textbox_implementation::DoNothing;
 use crate::interactable_implementations::textbox_implementation::ExecuteCommand;   
 use crate::interactable_implementations::textbox_implementation::DownloadFile;
+use crate::interactable_implementations::textbox_implementation::UploadFile;
 
 /*--===--===--===--===--===--===--===--===--===--*\
 |           Defining graphics Components          v
@@ -119,6 +120,22 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
         )
     ));
     non_interactable_components.insert(16,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 375.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+
+
+    only_interactable_components.insert(7, OnlyInteractable::TextBox(
+        TextBox::new(25.0, 600.0, 300.0, 50.0,
+            Color::new(0.9, 0.9, 0.9, 1.0),
+            Color::new(1.0, 1.0, 1.0, 1.0),
+            Color::new(0.7, 0.7, 0.7, 1.0),
+            "Enter a file to upload".to_string(),
+            Box::new(UploadFile),
+            TextBlock::new(35.0, 630.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            false, //Password mode
+            true,  //Enter clears text 
+            true   //Enter removes focus
+        )
+    ));
+    non_interactable_components.insert(17,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 595.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
     non_interactable_components.insert(0,  NonInteractable::ScreenDecoration(ScreenDecoration::new(9.0, 9.0, 332.0, 882.0, Color::new(0.2, 0.2, 0.2, 1.0))));
     non_interactable_components.insert(33, NonInteractable::ScreenDecoration(ScreenDecoration::new(349.0, 49.0, 1082.0, 842.0, Color::new(0.2, 0.2, 0.2, 1.0))));

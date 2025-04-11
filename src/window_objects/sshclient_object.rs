@@ -4,6 +4,7 @@ use std::io::prelude::*;
 use std::net::TcpStream;
 use std::collections::BTreeMap;
 use std::path::Path; 
+use std::fs::File;
 
 use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::window_object_center::OnlyInteractable;
@@ -156,6 +157,39 @@ impl SSHClient {
 
         //Hurray!
         Ok(local_file_name)
+    }
+
+    pub fn upload_file(&mut self, filename: &str, directory: &str) -> Result<String, String> {
+        let current_session = self.session
+            .clone()
+            .unwrap();
+    
+        let sftp_session = current_session.sftp()
+            .map_err(|_| {
+                self.session_still_valid = false;
+                "[SSH ERROR] Error establishing an SFTP session".to_string()
+            })?;
+
+        let target_destination = format!("{}/{}", directory.trim_matches('\n'), filename);
+
+        let mut local_file = File::open(filename)
+            .map_err(|_| "[SSH WARN] There was a problem finding the file to upload".to_string())?;
+        let mut file_contents = Vec::new();
+        
+        local_file.read_to_end(&mut file_contents)
+            .map_err(|_| "[SSH WARN] There was a problem reading the file to upload".to_string())?;
+    
+        //Now create the file in the remote server
+        let mut target_file = sftp_session.create(Path::new(&target_destination))
+            .map_err(|_| {
+                self.session_still_valid = false;
+                "[SSH ERROR] Could not create file link in destination folder"
+            })?;
+
+        target_file.write_all(&file_contents)
+            .map_err(|_| "[SSH WARN] Could not write data to target file")?;
+
+        Ok(target_destination)
     }
 
     pub fn execute_command(&mut self, new_command: &str, add_to_command_list: bool) -> Result<Vec<String>, String> {
