@@ -10,9 +10,6 @@ use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::window_object_center::OnlyInteractable;
 use crate::window_objects::window_object_center::HiddenObjectMethods;
 
-const NO_REPEATERS: [&str; 4] = ["ls", "head ", "tail ", "pwd"];
-// Whichever button calls the make_ssh_handshake method should handle these errors for eg give
-// useful error messages to a logger
 pub enum HandshakeErrorCode {
     TcpFail,
     SessionFail,
@@ -21,7 +18,6 @@ pub enum HandshakeErrorCode {
     SessionAuthFail,
 }
 
-//#[define(Copy)]
 pub struct SSHClient {
     remote_server: String,
     username: String,
@@ -72,7 +68,11 @@ impl SSHClient {
     pub fn update_login_field_values(&mut self, one: u32, two: u32, three: u32) {
         self.login_field_values = (one, two, three);
     }
-    
+   
+    pub fn is_session_still_valid(&self) -> bool {
+        self.session_still_valid
+    }
+
     pub fn make_ssh_handshake(&mut self, rs: String, un: String, pw: String) -> Result<i8, HandshakeErrorCode> {
         self.remote_server = rs;
         self.username = un;
@@ -93,12 +93,17 @@ impl SSHClient {
             })?;
 
         // Link the two
-        session_attempt.set_tcp_stream(tcp_stream_attempt.try_clone().map_err(|_| HandshakeErrorCode::TcpFail)?);
+        session_attempt.set_tcp_stream(tcp_stream_attempt.try_clone().map_err(|_| {
+            self.session_still_valid = false;
+            HandshakeErrorCode::TcpFail
+            })
+        ?);
 
         // Attempt to handshake
         match session_attempt.handshake() {
             Ok(()) => {/* Can Continue */}
-            Err(_) => { 
+            Err(_) => {
+                //The user may have entered an invalid hostname, so don't necessarily destroy the session validity yet
                 return Err(HandshakeErrorCode::HandshakeFail); 
             }
         }
@@ -107,6 +112,7 @@ impl SSHClient {
         match session_attempt.userauth_password(&self.username, &self.password) {
             Ok(()) => {
                 if !session_attempt.authenticated() {
+                    self.session_still_valid = false;
                     return Err(HandshakeErrorCode::SessionAuthFail);
                 }
             }
@@ -219,6 +225,7 @@ impl SSHClient {
                 match channel.exec(command) {
                     Ok(()) => { /* Good! We can continue */}
                     Err(_) => {
+                        self.session_still_valid = false;
                         return Err("[SSH ERROR] There was an error executing a command.".to_string());
                     }
                 }
@@ -229,10 +236,16 @@ impl SSHClient {
 
                 //? is propogating the error upwards to higher dimensions (wherever called the function) to handle it
                 channel.read_to_string(&mut result)
-                    .map_err(|_| "[SSH ERROR] The channel was unable to read the result of your command.".to_string())?;
+                    .map_err(|_| {
+                        self.session_still_valid = false;
+                        "[SSH ERROR] The channel was unable to read the result of your command.".to_string()
+                    })?;
 
                 channel.wait_close()
-                    .map_err(|_| "[SSH ERROR] The channel was unable to gracefully close.".to_string())?;
+                    .map_err(|_| {
+                        self.session_still_valid = false;
+                        "[SSH ERROR] The channel was unable to gracefully close.".to_string()
+                    })?;
 
                 // Now that all error-prone areas are covered, add the result to the return vector
                 resulting_lines.push(result);
@@ -245,6 +258,7 @@ impl SSHClient {
                 Ok(resulting_lines)
             }
             Err(_) => {
+                self.session_still_valid = false;
                 Err("[SSH ERROR] There was an error establishing a session-based channel.".to_string())
             }
         }
@@ -320,10 +334,12 @@ impl HiddenObjectMethods for SSHClient {
                                     log_obj.add_line("[SSH ERROR] Failed to establish a new session");
                                 }
                                 HandshakeErrorCode::HandshakeFail => {
-                                    log_obj.add_line("[SSH ERROR] Failed to create a link between a TCP Connection and a Session");
+                                    log_obj.add_line("[SSH WARN] Failed to create a link between a TCP Connection and a Session");
+                                    log_obj.add_line("[SSH HELP] ...Did you perhaps misspell the hostname?");
                                 }
                                 HandshakeErrorCode::LoginAuthFail => {
-                                    log_obj.add_line("[SSH ERROR] Failed to authenticate a login");
+                                    log_obj.add_line("[SSH WARN] Failed to authenticate a login");
+                                    log_obj.add_line("[SSH HELP] ...Did you type your username and password correctly?");
                                 }
                                 HandshakeErrorCode::SessionAuthFail => {
                                     log_obj.add_line("[SSH ERROR] Failed to authenticate a Session");

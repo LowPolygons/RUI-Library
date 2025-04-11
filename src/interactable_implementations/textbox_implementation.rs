@@ -48,7 +48,7 @@ impl TextboxMethod for ExecuteCommand {
 
         if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
             
-            if obj.get_login_status() {
+            if obj.get_login_status() && obj.is_session_still_valid() {
                 let result: Result<Vec<String>, String> = obj.execute_command(text, true);
 
                 if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) {
@@ -95,7 +95,7 @@ impl TextboxMethod for DownloadFile {
         if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
             if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) { 
                 //Ensure it is logged in
-                if obj.get_login_status() {
+                if obj.get_login_status() && obj.is_session_still_valid() {
                     //Require the directory
                     let directory: Result<Vec<String>, String> = obj.execute_command("pwd", false);
                 
@@ -114,8 +114,8 @@ impl TextboxMethod for DownloadFile {
                                 }
                             }
                         }
-                        Err(_) => {
-                            log_obj.add_line("[SSH ERROR] There was an issue attempting to download the file");
+                        Err(err) => {
+                            log_obj.add_line(&err);
                         }
                     }
                 }
@@ -136,7 +136,7 @@ impl TextboxMethod for UploadFile {
         if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
             if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) { 
                 //Ensure it is logged in
-                if obj.get_login_status() {
+                if obj.get_login_status() && obj.is_session_still_valid() {
                     //Require the directory
                     let directory: Result<Vec<String>, String> = obj.execute_command("pwd", false);
                 
@@ -155,8 +155,8 @@ impl TextboxMethod for UploadFile {
                                 }
                             }
                         }
-                        Err(_) => {
-                            log_obj.add_line("[SSH ERROR] There was an issue attempting to upload the file");
+                        Err(err) => {
+                            log_obj.add_line(&err);
                         }
                     }
                 }

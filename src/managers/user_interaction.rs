@@ -43,15 +43,10 @@ impl UserInteractionManagerMethods for UserInteractionManager {
         let no_interactables: BTreeMap<u32, NonInteractable> = win_man.get_non_interactable_graphics_components();
         let mutable_references: (&mut BTreeMap<u32, OnlyInteractable>, &mut BTreeMap<u32, HiddenManager>) = win_man.get_pair_of_graphics_components();
 
-        //let only_interactables: &mut BTreeMap<u32, OnlyInteractable> = win_man.get_only_interactable_graphics_components();
-        //let hidden_objects: &mut BTreeMap<u32, HiddenManager> = win_man.get_hidden_graphics_components();
-
         let mut news: BTreeMap<u32, NonInteractable> = BTreeMap::new();
         let mut has_changed: bool = false;
         let mut enter_press_failsafe: bool = false;
  
-
-        //TODO: IT WOULD BE NICE TO MAKE THIS NEATER AND NOT BE 8-indent levels at peak
         for (id, component) in mutable_references.0 {
             match component {
                 OnlyInteractable::Button(obj) => {
@@ -60,8 +55,9 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                     if !is_mouse_button_down(MouseButton::Left) {
                         obj.set_pressed_down(false);
                     }
+
                     if self.check_intersection(obj.get_intersection_values()) {
-                        if is_mouse_button_down(MouseButton::Left) /*TODO: add a check so that if the mouse whilst pressed down is dragged onto the button, that it doesn't toggle the button */{
+                        if is_mouse_button_down(MouseButton::Left) {
                             obj.set_depressed();
                             
                             if !obj.get_pressed_down() {
@@ -84,11 +80,11 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                     }
                 }
                 OnlyInteractable::TextBox(obj) => {
-                    obj.set_idle();
-                    
+                    obj.set_idle(); 
                     // This block will be used to update whether the textbox has focus 
+                    
                     if self.check_intersection(obj.get_intersection_values()) {
-                        if is_mouse_button_down(MouseButton::Left) { /*TODO: add a check so that if the mouse whilst pressed down is dragged onto the button, that it doesn't toggle the button */
+                        if is_mouse_button_down(MouseButton::Left) { 
                             obj.set_depressed();
                             
                             if !obj.get_pressed_down() {
