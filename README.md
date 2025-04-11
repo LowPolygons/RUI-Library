@@ -1,7 +1,7 @@
 # RUI-Library
 
 This is a small library built using Macroquad to provide a much more streamlined experience making basic UIs.
-The release available is a program build using RUI called TRSSH (Pronounced Trish)
+
 
 
 ## TRSSH 
