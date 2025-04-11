@@ -938,16 +938,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "raytracer"
-version = "0.1.0"
-dependencies = [
- "image 0.25.5",
- "macroquad",
- "rand 0.9.0",
- "ssh2",
-]
-
-[[package]]
 name = "redox_syscall"
 version = "0.5.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1144,6 +1134,16 @@ dependencies = [
  "serde_spanned",
  "toml_datetime",
  "winnow",
+]
+
+[[package]]
+name = "trssh"
+version = "0.1.0"
+dependencies = [
+ "image 0.25.5",
+ "macroquad",
+ "rand 0.9.0",
+ "ssh2",
 ]
 
 [[package]]

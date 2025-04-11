@@ -50,7 +50,7 @@ impl ButtonHandler for SSHTest {
     fn on_click(&self, _button_id: &u32, _win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>> {
                
         if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
-            obj.update_login_field_values(71, 72, 73);
+            obj.update_login_field_values(1, 2, 3);
         }
         None
     }
