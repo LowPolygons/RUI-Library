@@ -10,9 +10,10 @@ A program used to SSH onto a remote server (currently only supporting Username/P
 ### Recommended Setup 
 #### (If you have Rust and Cargo installed)
 
-1) Clone the repository into your home directory in a folder called 'repos'
+1) Clone the repository into your home directory in a folder called 'repos' and run
+`cargo build -r`
 
-2) Create another folder in your home directory called 'scripts'. Then, create a file which contains:
+3) Create another folder in your home directory called 'scripts'. Then, create a file which contains:
 
 ```
 #!/bin/bash
