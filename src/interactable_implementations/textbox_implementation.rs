@@ -45,7 +45,7 @@ impl TextboxMethod for ExecuteCommand {
     fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> { 
         let mut clone_of_parts = win_man_parts.clone();
 
-        if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
+        if let Some(HiddenManager::SSHClientKey(obj)) = win_man_hiddens.get_mut(&100) {
             
             if obj.get_login_status() && obj.is_session_still_valid() {
                 let result: Result<Vec<String>, String> = obj.execute_command(text, true);
@@ -91,7 +91,7 @@ impl TextboxMethod for DownloadFile {
         let mut clone_of_parts = win_man_parts.clone();
 
         //Confirm you have the logger and SSHCLient
-        if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
+        if let Some(HiddenManager::SSHClientKey(obj)) = win_man_hiddens.get_mut(&100) {
             if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) { 
                 //Ensure it is logged in
                 if obj.get_login_status() && obj.is_session_still_valid() {
@@ -132,7 +132,7 @@ impl TextboxMethod for UploadFile {
         let mut clone_of_parts = win_man_parts.clone();
 
         //Confirm you have the logger and SSHCLient
-        if let Some(HiddenManager::SSHClient(obj)) = win_man_hiddens.get_mut(&100) {
+        if let Some(HiddenManager::SSHClientKey(obj)) = win_man_hiddens.get_mut(&100) {
             if let Some(NonInteractable::Logger(log_obj)) = clone_of_parts.get_mut(&50) { 
                 //Ensure it is logged in
                 if obj.get_login_status() && obj.is_session_still_valid() {

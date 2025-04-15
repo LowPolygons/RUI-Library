@@ -100,6 +100,18 @@ impl WindowManagerMethods for WindowManager {
                 obj.force_set_text(username);
             }
         }
+
+        if let Some(public) = input_args.public {
+            if let Some(OnlyInteractable::TextBox(obj)) = self.only_interactable_components.get_mut(&8) {
+                obj.force_set_text(public);
+            }
+        }
+
+        if let Some(private) = input_args.private {
+            if let Some(OnlyInteractable::TextBox(obj)) = self.only_interactable_components.get_mut(&9) {
+                obj.force_set_text(private);
+            }
+        }
     }
 
     fn update(&mut self) {

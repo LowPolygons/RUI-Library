@@ -23,14 +23,18 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[command(name = "trssh")]
 pub struct InputArgs {
-    //First input
     #[arg(long)]
     hostname: Option<String>,
 
     #[arg(long)]
     username: Option<String>,
-}
 
+    #[arg(long)]
+    public: Option<String>,
+
+    #[arg(long)]
+    private: Option<String>,
+}
 
 fn TRSSH() -> Conf {
     Conf {
@@ -47,7 +51,6 @@ fn TRSSH() -> Conf {
         ..Default::default()
     }
 }
-
 
 // Trish
 #[macroquad::main(TRSSH)]
