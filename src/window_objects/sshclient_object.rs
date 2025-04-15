@@ -319,7 +319,7 @@ impl HiddenObjectMethods for SSHClient {
             }
             
             //Confirm they all have a value
-            if hn == "" || un == "" || pw == "" {
+            if hn == "" || un == "" {
                 if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
                     log_obj.add_line("There is a missing piece of info before attempting to log in.");
                 }
