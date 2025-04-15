@@ -18,6 +18,20 @@ use crate::managers::main_window_manager::WindowManager;
 use macroquad::window::Conf;
 use crate::miniquad::conf::Icon;
 
+use clap::Parser;
+
+#[derive(Parser, Debug)]
+#[command(name = "trssh")]
+pub struct InputArgs {
+    //First input
+    #[arg(long)]
+    hostname: Option<String>,
+
+    #[arg(long)]
+    username: Option<String>,
+}
+
+
 fn TRSSH() -> Conf {
     Conf {
         window_title: "TRSSH".to_string(),

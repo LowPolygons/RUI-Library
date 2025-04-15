@@ -3,7 +3,6 @@ use std::collections::BTreeMap;
 
 use crate::window_objects::window_object_center::HiddenManager;
 use crate::window_objects::window_object_center::NonInteractable;
-use crate::window_objects::logger_object::Logger; 
 
 const MAX_LOGGER_LINE_LENGTH: usize = 99999;
 // This is a trait that is used by the Textbox structure. Button methods should be on a per-button

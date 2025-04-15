@@ -19,7 +19,6 @@ use crate::window_objects::textbox_object::TextBox;
 use crate::interactable_implementations::button_implementations::SSHTest;
 
 // Any Textbox Implementations Go Here
-use crate::interactable_implementations::textbox_implementation::AddLogLine;
 use crate::interactable_implementations::textbox_implementation::DoNothing;
 use crate::interactable_implementations::textbox_implementation::ExecuteCommand;   
 use crate::interactable_implementations::textbox_implementation::DownloadFile;

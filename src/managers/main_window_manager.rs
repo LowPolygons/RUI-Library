@@ -13,6 +13,9 @@ use crate::window_objects::window_object_center::HiddenObjectMethods;
 
 use crate::init_graphics_objects::init_graphics_objects_main;
 
+use crate::InputArgs;
+
+use clap::Parser;
 
 /*--===--===--===--===--===--===--===--===--===--*\
 |     Main Unimplemented Structure and Trait      | 
@@ -81,6 +84,21 @@ impl WindowManagerMethods for WindowManager {
 
         for (_id, component) in &mut self.hidden_components {
             component.init();
+        }
+
+        //Format the input args
+        let input_args = InputArgs::parse();
+
+        if let Some(hostname) = input_args.hostname {
+            if let Some(OnlyInteractable::TextBox(obj)) = self.only_interactable_components.get_mut(&1) {
+                obj.force_set_text(hostname);
+            }
+        }
+
+        if let Some(username) = input_args.username {
+            if let Some(OnlyInteractable::TextBox(obj)) = self.only_interactable_components.get_mut(&2) {
+                obj.force_set_text(username);
+            }
         }
     }
 

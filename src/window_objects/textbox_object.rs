@@ -95,6 +95,7 @@ impl TextBox {
     pub fn force_clear_text(&mut self) {
         self.text_container.set_text("".to_string());
     }
+
     // This is a standard method for when you press enter
     pub fn clear_text(&mut self) {
         if self.enter_clears_text {
@@ -108,6 +109,10 @@ impl TextBox {
 
     pub fn does_enter_remove_focus(&self) -> bool {
         self.enter_removes_focus
+    }
+
+    pub fn force_set_text(&mut self, text: String) {
+        self.text_container.set_text(text);
     }
 }
 
