@@ -5,6 +5,7 @@ use crate::window_objects::screen_decoration_object::*;
 use crate::window_objects::button_object::*;
 use crate::window_objects::textbox_object::*;
 use crate::window_objects::sshclient_object::*;
+use crate::window_objects::sshclient_keybased_object::*;
 
 use std::collections::BTreeMap;
 
@@ -71,6 +72,7 @@ impl WindowObjectMethods for OnlyInteractable {
 
 pub enum HiddenManager {
     SSHClient(SSHClient),
+    SSHClientKey(SSHClientKey),
 }
 
 
@@ -78,12 +80,14 @@ impl HiddenObjectMethods for HiddenManager {
     fn init(&mut self) {
         match self {
             HiddenManager::SSHClient(object) => object.init(),
+            HiddenManager::SSHClientKey(object) => object.init()
         }
     }
 
     fn update(&mut self, only: &mut BTreeMap<u32, OnlyInteractable>, none: &mut BTreeMap<u32, NonInteractable>) {
         match self {
             HiddenManager::SSHClient(object) => object.update(only, none),
+            HiddenManager::SSHClientKey(object) => object.update(only, none),
         }
     }
 }

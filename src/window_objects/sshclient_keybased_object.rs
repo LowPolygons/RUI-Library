@@ -4,8 +4,8 @@ use std::io::prelude::*;
 use std::net::TcpStream;
 use std::collections::BTreeMap;
 use std::path::Path; 
+use std::fs;
 use std::fs::File;
-
 use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::window_object_center::OnlyInteractable;
 use crate::window_objects::window_object_center::HiddenObjectMethods;
@@ -18,14 +18,10 @@ pub enum HandshakeErrorCode {
     SessionAuthFail,
 }
 
-pub struct SSHClient {
+pub struct SSHClientKey {
     remote_server: String,
     username: String,
-    //Password auth
     password: String,
-
-    //SSH Key Auth
-    passphrase: String,
     public_key: String,
     private_key: String,
 
@@ -39,33 +35,29 @@ pub struct SSHClient {
 
     have_logged_in: bool,
     
-    login_field_values: (u32, u32, u32),
+    login_field_values: (u32, u32, u32, u32, u32),
 
     previous_commands: Vec<String>,
 
     logger_id: u32,
 }
 
-impl SSHClient {
+impl SSHClientKey {
     pub fn new() -> Self {
-        SSHClient {
+        SSHClientKey {
             remote_server: String::new(),
             username: String::new(),
-            //For username/password login
             password: String::new(),
-
-            //For SSH 
-            passphrase: String::new(),
             public_key: String::new(),
             private_key: String::new(),
-
+            
             tcp_stream: None,
             session: None,
 
             have_logged_in: false,
             session_still_valid: true,
 
-            login_field_values: (0, 0, 0),
+            login_field_values: (0, 0, 0, 0, 0),
 
             previous_commands: Vec::<String>::new(),
             
@@ -77,19 +69,21 @@ impl SSHClient {
         self.have_logged_in
     }
 
-    pub fn update_login_field_values(&mut self, one: u32, two: u32, three: u32) {
-        self.login_field_values = (one, two, three);
+    pub fn update_login_field_values(&mut self, one: u32, two: u32, three: u32, four: u32, five: u32) {
+        self.login_field_values = (one, two, three, four, five);
     }
    
     pub fn is_session_still_valid(&self) -> bool {
         self.session_still_valid
     }
 
-    pub fn make_ssh_handshake(&mut self, rs: String, un: String, pw: String) -> Result<i8, HandshakeErrorCode> {
+    pub fn make_ssh_handshake(&mut self, rs: String, un: String, pw: String, pubk: String, privk: String) -> Result<i8, HandshakeErrorCode> {
         self.remote_server = rs;
         self.username = un;
         self.password = pw;
-        
+        self.public_key = pubk;
+        self.private_key = privk;
+
         // Create a TcpStream by passing in the ssh key without the username
         let tcp_stream_attempt = TcpStream::connect(format!("{}:22", self.remote_server))
             .map_err(|_| {
@@ -120,15 +114,27 @@ impl SSHClient {
             }
         }
 
-        //Attempt to authenticate a login with password
-        match session_attempt.userauth_password(&self.username, &self.password) {
+        let public_key = if self.public_key == "" {
+            None
+        } else {
+            Some(Path::new(&self.public_key))
+        };
+
+        let passphrase = if self.password == "" {
+            None
+        } else {
+            Some(self.password.as_str())
+        };
+
+        match session_attempt.userauth_pubkey_file(&self.username, public_key, Path::new(&self.private_key), passphrase) {
             Ok(()) => {
                 if !session_attempt.authenticated() {
                     self.session_still_valid = false;
                     return Err(HandshakeErrorCode::SessionAuthFail);
                 }
             }
-            Err(_) => {
+            Err(e) => {
+                println!("{}", e);
                 return Err(HandshakeErrorCode::LoginAuthFail);
             }
         }
@@ -152,9 +158,6 @@ impl SSHClient {
             })?;
 
         let target_file_name: String = format!("{}/{}", directory.trim_matches('\n'), filename);
-
-        println!("Downloading {}", target_file_name);
-
         let local_file_name: String = format!("{}", filename);
         
         //Open the file 
@@ -162,6 +165,7 @@ impl SSHClient {
             .map_err(|_| "[SSH WARN] Problem creating file link".to_string())?;
 
         //Read contents into vector of strings
+
         let mut downloaded_content = Vec::<u8>::new();
 
         target_file.read_to_end(&mut downloaded_content)
@@ -176,6 +180,8 @@ impl SSHClient {
     }
 
     pub fn upload_file(&mut self, filename: &str, directory: &str) -> Result<String, String> {
+
+        
         let current_session = self.session
             .clone()
             .unwrap();
@@ -284,7 +290,7 @@ impl SSHClient {
     }
 }
 
-impl HiddenObjectMethods for SSHClient {
+impl HiddenObjectMethods for SSHClientKey {
     fn init(&mut self) {
         self.logger_id = 50; 
     }
@@ -297,12 +303,16 @@ impl HiddenObjectMethods for SSHClient {
         // If these values have been changed, it means a 'login' button has been filled in
         if  self.login_field_values.0 != 0
              && self.login_field_values.1 != 0
-             && self.login_field_values.2 != 0 {
+             && self.login_field_values.2 != 0
+             && self.login_field_values.3 != 0
+             && self.login_field_values.4 != 0 {
 
             // First, get the values from the text boxes, using the login_field_values as IDs
             let mut hn: String = String::new();
             let mut un: String = String::new();
             let mut pw: String = String::new();
+            let mut pb: String = String::new();
+            let mut pv: String = String::new();
           
             if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.0) {
                 hn = obj.get_text()
@@ -329,15 +339,33 @@ impl HiddenObjectMethods for SSHClient {
 
                 obj.force_clear_text();
             }
+
+            //Public Key
+            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.3) {
+                pb = obj.get_text()
+                    .clone()
+                    .to_string();
+
+                obj.force_clear_text();
+            }
             
+            //Private Key
+            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.4) {
+                pv = obj.get_text()
+                    .clone()
+                    .to_string();
+
+                obj.force_clear_text();
+            }
+
             //Confirm they all have a value
-            if hn == "" || un == "" {
+            if hn == "" || un == "" || pv == "" {
                 if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
                     log_obj.add_line("There is a missing piece of info before attempting to log in.");
                 }
             } else {
                 //Now attempt handshake
-                let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(hn, un, pw);
+                let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(hn, un, pw, pb, pv);
                 
                 if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
                     match ssh_result {
@@ -370,7 +398,7 @@ impl HiddenObjectMethods for SSHClient {
             }
             
             //Set back to zero so it doesn't endlessly occur
-            self.login_field_values = (0,0,0);
+            self.login_field_values = (0,0,0,0,0);
         }
     }
 }
