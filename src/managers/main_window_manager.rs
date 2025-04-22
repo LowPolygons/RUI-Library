@@ -101,13 +101,13 @@ impl WindowManagerMethods for WindowManager {
             }
         }
 
-        if let Some(public) = input_args.public_key {
+        if let Some(public) = input_args.public {
             if let Some(OnlyInteractable::TextBox(obj)) = self.only_interactable_components.get_mut(&4) {
                 obj.force_set_text(public);
             }
         }
 
-        if let Some(private) = input_args.private_key {
+        if let Some(private) = input_args.private {
             if let Some(OnlyInteractable::TextBox(obj)) = self.only_interactable_components.get_mut(&5) {
                 obj.force_set_text(private);
             }

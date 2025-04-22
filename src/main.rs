@@ -31,10 +31,10 @@ pub struct InputArgs {
     username: Option<String>,
 
     #[arg(long)]
-    public_key: Option<String>,
+    public: Option<String>,
 
     #[arg(long)]
-    private_key: Option<String>,
+    private: Option<String>,
 
     #[arg(long)]
     passphrase: Option<String>,
