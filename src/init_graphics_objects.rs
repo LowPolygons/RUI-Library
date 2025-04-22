@@ -39,49 +39,49 @@ use crate::interactable_implementations::textbox_implementation::UploadDirectory
 
 pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32, NonInteractable>, only_interactable_components: &mut BTreeMap<u32, OnlyInteractable>, hidden_components: &mut BTreeMap<u32, HiddenManager>) {
     only_interactable_components.insert(1, OnlyInteractable::TextBox(
-        TextBox::new(182.0, 25.0, 300.0, 50.0,
-            Color::new(0.9, 0.9, 0.9, 1.0),
-            Color::new(1.0, 1.0, 1.0, 1.0),
-            Color::new(0.7, 0.7, 0.7, 1.0),
+        TextBox::new(25.0, 25.0, 300.0, 50.0,
+            Color::new(1.0, 0.55, 0.55, 1.0),
+            Color::new(1.0, 0.8, 0.8, 1.0),
+            Color::new(0.7, 0.3, 0.3, 1.0),
             "Enter Hostname".to_string(),
             Box::new(DoNothing),
-            TextBlock::new(192.0, 55.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            TextBlock::new(35.0, 55.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
             false,
             false,
             true
         )
     ));
-    non_interactable_components.insert(101,  NonInteractable::ScreenDecoration(ScreenDecoration::new(177.0, 20.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(101,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 20.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
     only_interactable_components.insert(2, OnlyInteractable::TextBox(
-        TextBox::new(25.0, 120.0, 300.0, 50.0,
-            Color::new(0.9, 0.9, 0.9, 1.0),
-            Color::new(1.0, 1.0, 1.0, 1.0),
-            Color::new(0.7, 0.7, 0.7, 1.0),
+        TextBox::new(340.0, 25.0, 300.0, 50.0,
+            Color::new(1.0, 0.55, 0.55, 1.0),
+            Color::new(1.0, 0.8, 0.8, 1.0),
+            Color::new(0.7, 0.3, 0.3, 1.0),
             "Enter Username".to_string(),
             Box::new(DoNothing),
-            TextBlock::new(35.0, 150.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            TextBlock::new(350.0, 55.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
             false,
             false,
             true
         )
     ));
-    non_interactable_components.insert(102,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 115.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(102,  NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 20.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
     
     only_interactable_components.insert(3, OnlyInteractable::TextBox(
-        TextBox::new(25.0, 185.0, 300.0, 50.0,
+        TextBox::new(25.0, 155.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Enter Password".to_string(),
             Box::new(DoNothing),
-            TextBlock::new(35.0, 215.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            TextBlock::new(35.0, 185.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
             true,
             false,
             true
         )
     ));
-    non_interactable_components.insert(103,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 180.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(103,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 150.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
     
     only_interactable_components.insert(4, OnlyInteractable::TextBox(
         TextBox::new(340.0, 90.0, 300.0, 50.0,
