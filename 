@@ -77,22 +77,19 @@ impl SSHClient {
         self.have_logged_in
     }
 
-    pub fn update_login_field_values(&mut self, one: u32, two: u32, three: u32, four: u32, five: u32, six: u32) {
-        self.login_field_values = (one, two, three, four, five, six);
+    pub fn update_login_field_values(&mut self, one: u32, two: u32, three: u32) {
+        self.login_field_values = (one, two, three);
     }
    
     pub fn is_session_still_valid(&self) -> bool {
         self.session_still_valid
     }
 
-    pub fn make_ssh_handshake(&mut self, rs: String, un: String, pw: String, pb: String, pv: String, pp: String, key_instead_of_password: bool) -> Result<i8, HandshakeErrorCode> {
+    pub fn make_ssh_handshake(&mut self, rs: String, un: String, pw: String) -> Result<i8, HandshakeErrorCode> {
         self.remote_server = rs;
         self.username = un;
         self.password = pw;
-        self.public_key = pb;
-        self.private_key = pv;
-        self.passphrase = pp;
-
+        
         // Create a TcpStream by passing in the ssh key without the username
         let tcp_stream_attempt = TcpStream::connect(format!("{}:22", self.remote_server))
             .map_err(|_| {
@@ -122,45 +119,20 @@ impl SSHClient {
                 return Err(HandshakeErrorCode::HandshakeFail); 
             }
         }
-        
-        if key_instead_of_password {
-            let public_key = if self.public_key == "" {
-                None
-            } else {
-                Some(Path::new(&self.public_key))
-            };
 
-            let passphrase = if self.passphrase == "" {
-                None
-            } else {
-                Some(self.password.as_str())
-            };
-
-            match session_attempt.userauth_pubkey_file(&self.username, public_key, Path::new(&self.private_key), passphrase) {
-                Ok(()) => {
-                    if !session_attempt.authenticated() {
-                        self.session_still_valid = false;
-                        return Err(HandshakeErrorCode::SessionAuthFail);
-                    }
-                }
-                Err(e) => {
-                    return Err(HandshakeErrorCode::LoginAuthFail);
+        //Attempt to authenticate a login with password
+        match session_attempt.userauth_password(&self.username, &self.password) {
+            Ok(()) => {
+                if !session_attempt.authenticated() {
+                    self.session_still_valid = false;
+                    return Err(HandshakeErrorCode::SessionAuthFail);
                 }
             }
-        } else {
-            //Attempt to authenticate a login with password
-            match session_attempt.userauth_password(&self.username, &self.password) {
-                Ok(()) => {
-                    if !session_attempt.authenticated() {
-                        self.session_still_valid = false;
-                        return Err(HandshakeErrorCode::SessionAuthFail);
-                    }
-                }
-                Err(_) => {
-                    return Err(HandshakeErrorCode::LoginAuthFail);
-                }
+            Err(_) => {
+                return Err(HandshakeErrorCode::LoginAuthFail);
             }
         }
+
         self.session = Some(session_attempt);
         self.tcp_stream = Some(tcp_stream_attempt);
         self.have_logged_in = true;
@@ -345,53 +317,30 @@ impl HiddenObjectMethods for SSHClient {
 
             //Username
             if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.1) {
-                un = obj.get_text().clone().to_string();
+                un = obj.get_text()
+                    .clone()
+                    .to_string();
+
                 obj.force_clear_text();
             }
 
             //Password
             if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.2) {
-                pw = obj.get_text().clone().to_string();
+                pw = obj.get_text()
+                    .clone()
+                    .to_string();
+
                 obj.force_clear_text();
             }
             
-            //Public 
-            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.3) {
-                pb = obj.get_text().clone().to_string();
-                obj.force_clear_text();
-            }
-
-            //Private
-            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.4) {
-                pv = obj.get_text().clone().to_string();
-                obj.force_clear_text();
-            }
-
-            //Passphrase            
-            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.5) {
-                pp = obj.get_text().clone().to_string();
-                obj.force_clear_text();
-            }
             //Confirm they all have a value
-            //TODO: Optimise this boolean algebra
             if hn == "" || un == "" {
                 if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
-                    log_obj.add_line("[SSH CONNECT] There is a missing piece of info before attempting to log in.");
-                }
-            // if there are clashes (data in password as well as anything key then throw conflict)
-            } else if (pw != "" && (pp != "" || pv != "" || pb != "")) {
-                if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
-                    log_obj.add_line("[SSH CONNECT] Please SSH using only SSH Keys or by password, not both.");
+                    log_obj.add_line("There is a missing piece of info before attempting to log in.");
                 }
             } else {
-                let key_instead_of_password: bool = if pv != "" {
-                    true
-                } else {
-                    false
-                };
-
                 //Now attempt handshake
-                let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(hn, un, pw, pb, pv, pp, key_instead_of_password);
+                let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(hn, un, pw);
                 
                 if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
                     match ssh_result {
