@@ -29,6 +29,15 @@ pub struct InputArgs {
 
     #[arg(long)]
     username: Option<String>,
+
+    #[arg(long)]
+    public_key: Option<String>,
+
+    #[arg(long)]
+    private_key: Option<String>,
+
+    #[arg(long)]
+    passphrase: Option<String>,
 }
 
 
