@@ -8,7 +8,6 @@ pub mod screen_decoration_object;
 pub mod button_object;
 pub mod textbox_object;
 pub mod sshclient_object;
-pub mod sshclient_keybased_object;
 
 use std::path::Path; 
 use std::fs;
