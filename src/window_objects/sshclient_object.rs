@@ -204,7 +204,7 @@ impl SSHClient {
         std::fs::write(&filename, downloaded_content)
             .map_err(|_| "[SSH WARN] Problem creating a local save file to store the data in")?;
 
-        Ok(local_file_name)
+        Ok(filename.to_string())
     }
 
     pub fn upload_file(&mut self, filename: &str, directory: &str) -> Result<String, String> {
