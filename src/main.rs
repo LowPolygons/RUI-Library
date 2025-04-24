@@ -6,6 +6,8 @@ mod managers;
 
 mod assets; 
 
+mod object_ids;
+
 mod init_graphics_objects;
 
 use crate::managers::user_interaction::UserInteractionManager;

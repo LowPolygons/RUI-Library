@@ -16,7 +16,7 @@ use crate::window_objects::button_object::Button;
 use crate::window_objects::textbox_object::TextBox;
 
 // Any Button Implementations Go Here
-use crate::interactable_implementations::button_implementations::SSHTest;
+use crate::interactable_implementations::button_implementations::SSHConnect;
 
 // Any Textbox Implementations Go Here
 use crate::interactable_implementations::textbox_implementation::DoNothing;
@@ -24,6 +24,9 @@ use crate::interactable_implementations::textbox_implementation::ExecuteCommand;
 use crate::interactable_implementations::textbox_implementation::DownloadFile;
 use crate::interactable_implementations::textbox_implementation::UploadFile;
 use crate::interactable_implementations::textbox_implementation::UploadDirectory;
+
+// Import all IDs 
+use crate::object_ids::*;
 
 /*--===--===--===--===--===--===--===--===--===--*\
 |           Defining graphics Components          v
@@ -38,7 +41,7 @@ use crate::interactable_implementations::textbox_implementation::UploadDirectory
 // Corresponding Backgrounds: 101 to 120
 
 pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32, NonInteractable>, only_interactable_components: &mut BTreeMap<u32, OnlyInteractable>, hidden_components: &mut BTreeMap<u32, HiddenManager>) {
-    only_interactable_components.insert(1, OnlyInteractable::TextBox(
+    only_interactable_components.insert(HOSTNAME_BOX, OnlyInteractable::TextBox(
         TextBox::new(25.0, 25.0, 300.0, 50.0,
             Color::new(1.0, 0.55, 0.55, 1.0),
             Color::new(1.0, 0.8, 0.8, 1.0),
@@ -51,9 +54,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             true
         )
     ));
-    non_interactable_components.insert(101,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 20.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(HOSTNAME_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 20.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
-    only_interactable_components.insert(2, OnlyInteractable::TextBox(
+    only_interactable_components.insert(USERNAME_BOX, OnlyInteractable::TextBox(
         TextBox::new(340.0, 25.0, 300.0, 50.0,
             Color::new(1.0, 0.55, 0.55, 1.0),
             Color::new(1.0, 0.8, 0.8, 1.0),
@@ -66,9 +69,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             true
         )
     ));
-    non_interactable_components.insert(102,  NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 20.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(USERNAME_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 20.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
     
-    only_interactable_components.insert(3, OnlyInteractable::TextBox(
+    only_interactable_components.insert(PASSWORD_BOX, OnlyInteractable::TextBox(
         TextBox::new(25.0, 155.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
@@ -81,9 +84,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             true
         )
     ));
-    non_interactable_components.insert(103,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 150.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(PASSWORD_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 150.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
     
-    only_interactable_components.insert(4, OnlyInteractable::TextBox(
+    only_interactable_components.insert(PUBLIC_KEY_BOX, OnlyInteractable::TextBox(
         TextBox::new(340.0, 90.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
@@ -96,9 +99,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             true
         )
     ));
-    non_interactable_components.insert(104,  NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 85.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(PUBLIC_KEY_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 85.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
-    only_interactable_components.insert(5, OnlyInteractable::TextBox(
+    only_interactable_components.insert(PRIVATE_KEY_BOX, OnlyInteractable::TextBox(
         TextBox::new(340.0, 155.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
@@ -111,9 +114,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             true
         )
     ));
-    non_interactable_components.insert(105,  NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 150.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(PRIVATE_KEY_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 150.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
-    only_interactable_components.insert(6, OnlyInteractable::TextBox(
+    only_interactable_components.insert(PASSPHRASE_BOX, OnlyInteractable::TextBox(
         TextBox::new(340.0, 220.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
@@ -126,21 +129,21 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             true
         )
     ));
-    non_interactable_components.insert(106,  NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 215.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(PASSPHRASE_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 215.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
 
-    only_interactable_components.insert(7, OnlyInteractable::Button(
+    only_interactable_components.insert(LOGIN_BUTTON, OnlyInteractable::Button(
         Button::new(182.0, 285.0, 300.0, 50.0,
             Color::new(0.5, 0.2, 0.2, 1.0),
             Color::new(0.8, 0.5, 0.5, 1.0),
             Color::new(0.3, 0.01, 0.01, 1.0),
-            Box::new(SSHTest),
+            Box::new(SSHConnect),
             TextBlock::new(227.0, 315.0, Color::new(1.0, 1.0, 1.0, 1.0), "Login".to_string(), 20.0)
         )
     ));
-    non_interactable_components.insert(107,  NonInteractable::ScreenDecoration(ScreenDecoration::new(177.0, 280.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(LOGIN_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(177.0, 280.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
-    only_interactable_components.insert(8, OnlyInteractable::TextBox(
+    only_interactable_components.insert(COMMAND_BOX, OnlyInteractable::TextBox(
         TextBox::new(25.0, 415.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
@@ -153,9 +156,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             false
         )
     ));
-    non_interactable_components.insert(108,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 410.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(COMMAND_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 410.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
-    only_interactable_components.insert(9, OnlyInteractable::TextBox(
+    only_interactable_components.insert(DOWNLOAD_BOX, OnlyInteractable::TextBox(
         TextBox::new(25.0, 480.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
@@ -168,10 +171,10 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             true   //Enter removes focus
         )
     ));
-    non_interactable_components.insert(109,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 475.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(DOWNLOAD_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 475.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
 
-    only_interactable_components.insert(10, OnlyInteractable::TextBox(
+    only_interactable_components.insert(UPLOAD_FILE_BOX, OnlyInteractable::TextBox(
         TextBox::new(25.0, 545.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
@@ -184,9 +187,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             true   //Enter removes focus
         )
     ));
-    non_interactable_components.insert(110,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 540.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(UPLOAD_FILE_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 540.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
-    only_interactable_components.insert(11, OnlyInteractable::TextBox(
+    only_interactable_components.insert(UPLOAD_DIR_BOX, OnlyInteractable::TextBox(
         TextBox::new(25.0, 610.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
@@ -199,14 +202,14 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             true   //Enter removes focus
         )
     ));
-    non_interactable_components.insert(111,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 605.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(UPLOAD_DIR_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 605.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
     non_interactable_components.insert(51,  NonInteractable::ScreenDecoration(ScreenDecoration::new(9.0, 9.0, 664.0, 342.0, Color::new(0.2, 0.2, 0.2, 1.0))));
     non_interactable_components.insert(52, NonInteractable::ScreenDecoration(ScreenDecoration::new(9.0, 399.0, 664.0, 492.0, Color::new(0.2, 0.2, 0.2, 1.0))));
 
     non_interactable_components.insert(49, NonInteractable::ScreenDecoration(ScreenDecoration::new(681.0, 49.0, 1082.0, 842.0, Color::new(0.2, 0.2, 0.2, 1.0))));
     
-    non_interactable_components.insert(50, NonInteractable::Logger(Logger::new(682.0, 50.0, 1080.0, 840.0, 5.0, 20.0, Color::new(1.0, 1.0, 1.0, 1.0), "".to_string())));
+    non_interactable_components.insert(LOGGER, NonInteractable::Logger(Logger::new(682.0, 50.0, 1080.0, 840.0, 5.0, 20.0, Color::new(1.0, 1.0, 1.0, 1.0), "".to_string())));
 
     non_interactable_components.insert(71, NonInteractable::TextBlock(TextBlock::new(1161.0, 33.0, Color::new(0.05, 0.05, 0.05, 1.0), "Logger".to_string(), 46.0)));
 
@@ -218,5 +221,5 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
     non_interactable_components.insert(74, NonInteractable::TextBlock(TextBlock::new(350.0, 555.0, Color::new(0.05, 0.05, 0.05, 1.0), "blocking action".to_string(), 20.0)));
     non_interactable_components.insert(75, NonInteractable::TextBlock(TextBlock::new(350.0, 575.0, Color::new(0.05, 0.05, 0.05, 1.0), "The screen may go unresponsive ".to_string(), 20.0)));
 
-    hidden_components.insert(100, HiddenManager::SSHClient(SSHClient::new()));
+    hidden_components.insert(SSHCLIENT, HiddenManager::SSHClient(SSHClient::new()));
 }
