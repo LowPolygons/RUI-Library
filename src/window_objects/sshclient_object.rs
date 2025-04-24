@@ -242,23 +242,23 @@ impl SSHClient {
             .unwrap()
             .channel_session();
         
-        //Append all previous commands
         let mut full_command: String = "source ~/.bashrc".to_string(); 
-        
+       
+        //Filter only commands that contain cd
         for com in &self.previous_commands {
             if com.contains("cd ") {
                 full_command = format!("{}; {}", full_command, com);
             }
         }
-       
+        // If the new command contains 'cd /' it means no other previous cd command matters, and
+        // therefore can be cleared       
         if new_command.contains("cd /") {
             full_command = new_command.to_string();
             self.previous_commands = Vec::new();
         } else {
             full_command = format!("{}; {}", full_command, new_command);
         }
-        // If the new command contains 'cd /' it means no other previous cd command matters, and
-        // therefore can be cleared
+
         let command: &str = &full_command;
 
         println!("Executed command: {}", command);
@@ -277,8 +277,8 @@ impl SSHClient {
                     }
                 }
 
-                let mut result = String::new();
-                        
+                let mut result = String::new(); 
+                let mut error_result = String::new();
                 //This has a Result<usize, Err> where usize is the number of bytes
 
                 //? is propogating the error upwards to higher dimensions (wherever called the function) to handle it
@@ -287,6 +287,12 @@ impl SSHClient {
                         self.session_still_valid = false;
                         "[SSH ERROR] The channel was unable to read the result of your command.".to_string()
                     })?;
+                
+                channel.stderr().read_to_string(&mut error_result)
+                    .map_err(|_| {
+                        self.session_still_valid = false;
+                        "[SSH ERROR] The channel was unable to read the error result of your command.".to_string()
+                    })?;
 
                 channel.wait_close()
                     .map_err(|_| {
@@ -294,13 +300,16 @@ impl SSHClient {
                         "[SSH ERROR] The channel was unable to gracefully close.".to_string()
                     })?;
 
-                // Now that all error-prone areas are covered, add the result to the return vector
-                resulting_lines.push(result);
-                
-                // Now check if it needs adding to the command list
-                if add_to_command_list {
-                    self.previous_commands.push(new_command.to_string());
-                }
+                if !error_result.is_empty() {
+                    resulting_lines.push(format!("Command Failed, Error: {}", error_result));
+                } else {
+                    resulting_lines.push(result);
+
+                    // Now check if it needs adding to the command list
+                    if add_to_command_list {
+                        self.previous_commands.push(new_command.to_string());
+                    }
+                } 
 
                 Ok(resulting_lines)
             }

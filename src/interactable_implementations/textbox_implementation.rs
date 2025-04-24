@@ -10,33 +10,33 @@ use crate::interactable_implementations::is_directory;
 use crate::object_ids::*;
 
 const MAX_LOGGER_LINE_LENGTH: usize = 99999;
-// This is a trait that is used by the Textbox structure. Button methods should be on a per-button
-// basis, and as a result they need a way to have one implemented method for on press for a general
-// button, but also a method individually.
-// This trait allows the button to store a 'button handler' which can be anything that implements
-// the buttonhandler trait. When a new button is needed, add a new structure
 
+//Define structs which implement this trait; doing so allows them to all be stored in the same Box
 pub trait TextboxMethod {
-    // Buttons should be able to modify parts of the window that arent directly interactable by the user, hence the copy of the map for NonInteractables
     fn on_enter(&self, textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>>;
 }
 
 
 pub struct DoNothing;
+pub struct AddLogLine;
+pub struct ExecuteCommand;
+pub struct DownloadFile;
+pub struct UploadDirectory;
+pub struct UploadFile;
 
+// Not all text boxes should do something upon pressing enter directly
 impl TextboxMethod for DoNothing {
     fn on_enter(&self, _t: &u32, _w: BTreeMap<u32, NonInteractable>, _i: &mut BTreeMap<u32, HiddenManager>, _e: &str) -> Option<BTreeMap<u32, NonInteractable>> {
         None
     }
 }
-pub struct AddLogLine;
+
 
 impl TextboxMethod for AddLogLine {
     fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, _win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> {
         let mut clone_of_parts = win_man_parts.clone();       
 
         if let Some(NonInteractable::Logger(logger)) = clone_of_parts.get_mut(&LOGGER) {
-            //The input isn't directly modifyable, therefore make a clone
             logger.add_line(text);
         }
         
@@ -44,7 +44,6 @@ impl TextboxMethod for AddLogLine {
     }
 }
 
-pub struct ExecuteCommand;
 
 impl TextboxMethod for ExecuteCommand {
     fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> { 
@@ -89,7 +88,7 @@ impl TextboxMethod for ExecuteCommand {
     }
 }
 
-pub struct DownloadFile;
+
 
 impl TextboxMethod for DownloadFile {
     fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> { 
@@ -130,7 +129,7 @@ impl TextboxMethod for DownloadFile {
     }
 }
 
-pub struct UploadDirectory;
+
 
 impl TextboxMethod for UploadDirectory {
     fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> { 
@@ -198,7 +197,6 @@ impl TextboxMethod for UploadDirectory {
     }
 }
 
-pub struct UploadFile;
 
 impl TextboxMethod for UploadFile {
     fn on_enter(&self, _textbox_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>, text: &str) -> Option<BTreeMap<u32, NonInteractable>> { 
