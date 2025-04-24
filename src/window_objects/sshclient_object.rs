@@ -21,10 +21,10 @@ pub enum HandshakeErrorCode {
 pub struct SSHClient {
     remote_server: String,
     username: String,
-    //Password auth
+    // Password auth
     password: String,
 
-    //SSH Key Auth
+    // SSH Key Auth
     passphrase: String,
     public_key: String,
     private_key: String,
@@ -51,10 +51,11 @@ impl SSHClient {
         SSHClient {
             remote_server: String::new(),
             username: String::new(),
-            //For username/password login
+            
+            // For username/password login
             password: String::new(),
 
-            //For SSH 
+            // For Key 
             passphrase: String::new(),
             public_key: String::new(),
             private_key: String::new(),
@@ -118,7 +119,7 @@ impl SSHClient {
         match session_attempt.handshake() {
             Ok(()) => {/* Can Continue */}
             Err(_) => {
-                //The user may have entered an invalid hostname, so don't necessarily destroy the session validity yet
+                // The user may have entered an invalid hostname, so don't necessarily destroy the session validity yet
                 return Err(HandshakeErrorCode::HandshakeFail); 
             }
         }
@@ -148,7 +149,7 @@ impl SSHClient {
                 }
             }
         } else {
-            //Attempt to authenticate a login with password
+            // Attempt to authenticate a login with password
             match session_attempt.userauth_password(&self.username, &self.password) {
                 Ok(()) => {
                     if !session_attempt.authenticated() {
@@ -167,12 +168,12 @@ impl SSHClient {
         Ok(1)
     }
    
-    pub fn download_file(&mut self, filename: &str, directory: &str) -> Result<String, String> { //<Filename with directory if applicable, or error message
+    pub fn download_file(&mut self, filename: &str, directory: &str) -> Result<String, String> { // <Filename with directory if applicable, or error message
         let current_session = self.session
             .clone()
             .unwrap();
 
-        //Attempt to create a SFTP session
+        // Attempt to create a SFTP session
         let sftp_session = current_session.sftp()
             .map_err(|_| {
                 self.session_still_valid = false;
@@ -185,21 +186,21 @@ impl SSHClient {
 
         let local_file_name: String = format!("{}", filename);
         
-        //Open the file 
+        // Open the file 
         let mut target_file = sftp_session.open(Path::new(&target_file_name))
             .map_err(|_| "[SSH WARN] Problem creating file link".to_string())?;
 
-        //Read contents into vector of strings
+        // Read contents into vector of strings
         let mut downloaded_content = Vec::<u8>::new();
 
         target_file.read_to_end(&mut downloaded_content)
             .map_err(|_| "[SSH WARN] There was a problem trying to download the file contents")?;
 
-        //Save the contents into the desired file
+        // Save the contents into the desired file
         std::fs::write(&local_file_name, downloaded_content)
             .map_err(|_| "[SSH WARN] Problem creating a local save file to store the data in")?;
 
-        //Hurray!
+        // Hurray!
         Ok(local_file_name)
     }
 
@@ -223,7 +224,7 @@ impl SSHClient {
         local_file.read_to_end(&mut file_contents)
             .map_err(|_| "[SSH WARN] There was a problem reading the file to upload".to_string())?;
     
-        //Now create the file in the remote server
+        // Now create the file in the remote server
         let mut target_file = sftp_session.create(Path::new(&target_destination))
             .map_err(|_| {
                 self.session_still_valid = false;
@@ -244,7 +245,7 @@ impl SSHClient {
         
         let mut full_command: String = "source ~/.bashrc".to_string(); 
        
-        //Filter only commands that contain cd
+        // Filter only commands that contain cd
         for com in &self.previous_commands {
             if com.contains("cd ") {
                 full_command = format!("{}; {}", full_command, com);
@@ -265,10 +266,10 @@ impl SSHClient {
 
         let mut resulting_lines: Vec<String> = Vec::<String>::new();
 
-        //Return type Result<Session, Error>
+        // Return type Result<Session, Error>
         match current_channel {
             Ok(ref mut channel) => {
-                //exec has return type Result<(), Error>
+                // exec has return type Result<(), Error>
                 match channel.exec(command) {
                     Ok(()) => { /* Good! We can continue */}
                     Err(_) => {
@@ -279,9 +280,9 @@ impl SSHClient {
 
                 let mut result = String::new(); 
                 let mut error_result = String::new();
-                //This has a Result<usize, Err> where usize is the number of bytes
+                // This has a Result<usize, Err> where usize is the number of bytes
 
-                //? is propogating the error upwards to higher dimensions (wherever called the function) to handle it
+                // ? is propogating the error upwards to higher dimensions (wherever called the function) to handle it
                 channel.read_to_string(&mut result)
                     .map_err(|_| {
                         self.session_still_valid = false;
@@ -411,7 +412,7 @@ impl HiddenObjectMethods for SSHClient {
                         }
                     }
                 }    
-                //Set back to zero so it doesn't endlessly occur
+                // Set back to zero so it doesn't endlessly occur
                 self.login_field_values = (0,0,0,0,0,0);
              }
         }

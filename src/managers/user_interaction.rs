@@ -95,8 +95,8 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                             obj.set_hover();
                         }
                     } else {
-                        //Doing it this way allows you to enter text without the mouse being
-                        //pressed down
+                        // Doing it this way allows you to enter text without the mouse being
+                        // pressed down
                         if is_mouse_button_down(MouseButton::Left) {
                             obj.set_pressed_down(false);
                         }
@@ -134,7 +134,7 @@ impl UserInteractionManagerMethods for UserInteractionManager {
             }
         }
 
-        //To not be wasteful, only update this if something was updated
+        // To not be wasteful, only update this if something was updated
         if has_changed { 
             win_man.set_non_interactable_graphics_components(news);
         }

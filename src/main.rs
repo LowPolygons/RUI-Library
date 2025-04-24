@@ -20,7 +20,7 @@ use clap::Parser;
 #[derive(Parser, Debug)]
 #[command(name = "trssh")]
 pub struct InputArgs {
-    //First input
+    // First input
     #[arg(long)]
     hostname: Option<String>,
 
@@ -63,20 +63,20 @@ fn trssh_info() -> Conf {
 
 #[macroquad::main(trssh_info)]
 async fn main() {
-    //=-=-=-=== General Initialisation ===-=-=-=//
+    // =-=-=-=== General Initialisation ===-=-=-=//
 
     //  Window Manager handles graphics for the entire window
     let mut window_manager = WindowManager::new(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_R, SCREEN_G, SCREEN_B, SCREEN_A);
     //  User Interaction Manager handles how the user and ui will interact
     let mut user_interation_manager = UserInteractionManager::new();
 
-    //=-=-=-=== Init Methods ===-=-=-=// 
+    // =-=-=-=== Init Methods ===-=-=-=//
     
-    //May be redundant for some, but in case any structures need any Initialisation
+    // May be redundant for some, but in case any structures need any Initialisation
     window_manager.init(); 
     user_interation_manager.init();
 
-    //=-=-=-=== Main program Loop ===-=-=-=// 
+    // =-=-=-=== Main program Loop ===-=-=-=//
     loop {
         // Interactions require the window manager hence the mutable reference
         user_interation_manager.update(&mut window_manager);

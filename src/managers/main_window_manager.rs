@@ -86,7 +86,7 @@ impl WindowManagerMethods for WindowManager {
             component.init();
         }
 
-        //Format the input args
+        // Format the input args
         let input_args = InputArgs::parse();
 
         if let Some(hostname) = input_args.hostname {

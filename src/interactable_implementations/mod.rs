@@ -4,6 +4,8 @@ pub mod button_implementations;
 use std::path::Path; 
 use std::fs;
 
+// For use in the Textboxes for uploading a directory
+// WARNING: RECURSIVE
 pub fn get_files_in_directory(dir: &str) -> Result<(Vec<String>, Vec<String>), String> {
     let path_attempt = Path::new(dir);
     let mut items: Vec<String> = Vec::<String>::new();

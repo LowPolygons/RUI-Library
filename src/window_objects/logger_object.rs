@@ -47,8 +47,8 @@ impl Logger {
 
         input = self.line_tag.clone() + &input; 
 
-        //Split at line breaks, then as this is only a logger and not a command line, just truncate
-        //the output if it exceeds the screen size
+        // Split at line breaks, then as this is only a logger and not a command line, just truncate
+        // the output if it exceeds the screen size
         let strings_to_add: Vec<String> = input
             .lines()
             .map(|s| s.to_string())
@@ -67,7 +67,7 @@ impl WindowObjectMethods for Logger {
     }
 
     fn update(&mut self) {
-        //The font size is how tall the characters are
+        // The font size is how tall the characters are
         let max_lines: usize = (self.h / (self.font_size + 2.0)).floor() as usize;
     let mut lower_index: usize = 0;
         let upper_index: usize = self.lines.len();

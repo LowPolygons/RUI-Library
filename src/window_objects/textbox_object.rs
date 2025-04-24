@@ -31,7 +31,7 @@ pub struct TextBox {
     text_container: TextBlock,
     
     password_mode: bool,
-    //This is for preventing character duplication
+    // This is for preventing character duplication
     previous_char: char,
     delete_failsafe: bool,
     first_frame_failsafe: bool,
@@ -119,7 +119,7 @@ impl TextBox {
 
 impl WindowObjectMethods for TextBox {
     fn init(&mut self) {
-        //Need to get text working
+        // Need to get text working
         self.text_container.init();
         self.text_container.set_password_mode(self.password_mode);
     }
@@ -157,7 +157,7 @@ impl WindowObjectMethods for TextBox {
                             let mut current: String = self.text_container.get_text();
 
                             if current.len() > 0 {
-                                current = current[0..current.len()-1].to_string(); //inclusive of start_index, not inclusive of end_index
+                                current = current[0..current.len()-1].to_string(); // inclusive of start_index, not inclusive of end_index
                             }
 
                             self.text_container.set_text(current);

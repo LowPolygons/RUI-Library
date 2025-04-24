@@ -166,9 +166,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             "Enter a file to download".to_string(),
             Box::new(DownloadFile),
             TextBlock::new(35.0, 510.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
-            false, //Password mode
-            true,  //Enter clears text 
-            true   //Enter removes focus
+            false, // Password mode
+            true,  // Enter clears text 
+            true   // Enter removes focus
         )
     ));
     non_interactable_components.insert(DOWNLOAD_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 475.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
@@ -182,9 +182,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             "Enter a file to upload".to_string(),
             Box::new(UploadFile),
             TextBlock::new(35.0, 575.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
-            false, //Password mode
-            true,  //Enter clears text 
-            true   //Enter removes focus
+            false, // Password mode
+            true,  // Enter clears text 
+            true   // Enter removes focus
         )
     ));
     non_interactable_components.insert(UPLOAD_FILE_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 540.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
@@ -197,9 +197,9 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
             "Enter a directory to upload".to_string(),
             Box::new(UploadDirectory),
             TextBlock::new(35.0, 640.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
-            false, //Password mode
-            true,  //Enter clears text 
-            true   //Enter removes focus
+            false, // Password mode
+            true,  // Enter clears text 
+            true   // Enter removes focus
         )
     ));
     non_interactable_components.insert(UPLOAD_DIR_DCR,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 605.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));

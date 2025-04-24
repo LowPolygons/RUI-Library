@@ -5,16 +5,16 @@ use ::rand::rng;
 
 #[derive(Clone)]
 pub struct RaytracerWindow {
-    //These are mandatory
+    // These are mandatory
     x: f32,
     y: f32,
     w: f32,
     h: f32,
     colour: Color,
  
-    //These are Raytracer specific
+    // These are Raytracer specific
     render: bool,
-    image_object: Image, //Dimensions equal to the raytracer window, can use set_pixel(x, y, colour)
+    image_object: Image, // Dimensions equal to the raytracer window, can use set_pixel(x, y, colour)
 }
 
 #[allow(dead_code)]
@@ -63,7 +63,7 @@ impl WindowObjectMethods for RaytracerWindow {
 
         let image_texture = Texture2D::from_image(&self.image_object);
         
-        //The colour parameter is a tint, therefore use white
+        // The colour parameter is a tint, therefore use white
         draw_texture(&image_texture, self.x, self.y, WHITE);
     }
 }

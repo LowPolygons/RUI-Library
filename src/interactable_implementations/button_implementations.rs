@@ -6,11 +6,8 @@ use crate::window_objects::window_object_center::NonInteractable;
 
 use crate::object_ids::*;
 
-// This is a trait that is used by the Buttons structure. Button methods should be on a per-button
-// basis, and as a result they need a way to have one implemented method for on press for a general
-// button, but also a method individually.
-// This trait allows the button to store a 'button handler' which can be anything that implements
-// the buttonhandler trait. When a new button is needed, add a new structure
+// Buttons run a command, and so that buttons with different methods can be stored in the same Box
+// they have a struct which implements the below trait.
 
 pub trait ButtonHandler {
     fn on_click(&self, button_id: &u32, win_man_parts: BTreeMap<u32, NonInteractable>, win_man_hiddens: &mut BTreeMap<u32, HiddenManager>) -> Option<BTreeMap<u32, NonInteractable>>;
