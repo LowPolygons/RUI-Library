@@ -28,18 +28,8 @@ use crate::interactable_implementations::textbox_implementation::UploadDirectory
 // Import all IDs 
 use crate::object_ids::*;
 
-/*--===--===--===--===--===--===--===--===--===--*\
-|           Defining graphics Components          v
-|
-|  - All IDs must be unique. Ideally, keep them unique across even across both non/only interactables structures
-|  - For Buttons that toggle on or off raytracers, the button id must be exactly 1 id less
-|                                                 
-|                                                 ^
-\*--===--===--===--===--===--===--===--===--===--*/
-
 // Buttons: range from 1 to 20
 // Corresponding Backgrounds: 101 to 120
-
 pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32, NonInteractable>, only_interactable_components: &mut BTreeMap<u32, OnlyInteractable>, hidden_components: &mut BTreeMap<u32, HiddenManager>) {
     only_interactable_components.insert(HOSTNAME_BOX, OnlyInteractable::TextBox(
         TextBox::new(25.0, 25.0, 300.0, 50.0,

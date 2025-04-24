@@ -86,9 +86,9 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                     }
                 }
                 OnlyInteractable::TextBox(obj) => {
-                    obj.set_idle(); 
+                    obj.set_idle();
+
                     // This block will be used to update whether the textbox has focus 
-                    
                     if self.check_intersection(obj.get_intersection_values()) {
                         if is_mouse_button_down(MouseButton::Left) { 
                             obj.set_depressed();
@@ -108,12 +108,13 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                         }
                     }
 
-                    // This block will be used to check whether pressing enter should clear the text box
+                    // This block will be used to check for pressing enter on a textbox 
                     if obj.get_pressed_down() {
                         if is_key_down(KeyCode::Enter) && !is_mouse_button_down(MouseButton::Left) {
                             if !enter_press_failsafe {
                                 enter_press_failsafe = true;
 
+                                // Actually important distinction
                                 if obj.does_enter_remove_focus() {
                                     obj.set_pressed_down(false);
                                 }
@@ -127,7 +128,6 @@ impl UserInteractionManagerMethods for UserInteractionManager {
                                     has_changed = true;
                                     break;
                                 }
-
                             }
                         } else {
                             enter_press_failsafe = false;

@@ -10,6 +10,9 @@ use crate::window_objects::window_object_center::NonInteractable;
 use crate::window_objects::window_object_center::OnlyInteractable;
 use crate::window_objects::window_object_center::HiddenObjectMethods;
 
+use crate::object_ids::LOGGER;
+// Custom Error codes used to display points of failure and handle errors in a more syntaxically
+// attractive manner
 pub enum HandshakeErrorCode {
     TcpFail,
     SessionFail,
@@ -167,8 +170,9 @@ impl SSHClient {
         self.have_logged_in = true;
         Ok(1)
     }
-   
-    pub fn download_file(&mut self, filename: &str, directory: &str) -> Result<String, String> { // <Filename with directory if applicable, or error message
+
+    // Returns Filename with directory if applicable, or error message
+    pub fn download_file(&mut self, filename: &str, directory: &str) -> Result<String, String> { 
         let current_session = self.session
             .clone()
             .unwrap();
@@ -180,14 +184,14 @@ impl SSHClient {
                 "[SSH ERROR] Error establishing an SFTP session".to_string()
             })?;
 
+        // Directory is aquired through 'pwd' which has a \n at the end
         let target_file_name: String = format!("{}/{}", directory.trim_matches('\n'), filename);
 
+        // Debug info for terminal
         println!("Downloading {}", target_file_name);
 
-        let local_file_name: String = format!("{}", filename);
-        
         // Open the file 
-        let mut target_file = sftp_session.open(Path::new(&target_file_name))
+        let mut target_file = sftp_session.open(Path::new(filename))
             .map_err(|_| "[SSH WARN] Problem creating file link".to_string())?;
 
         // Read contents into vector of strings
@@ -197,10 +201,9 @@ impl SSHClient {
             .map_err(|_| "[SSH WARN] There was a problem trying to download the file contents")?;
 
         // Save the contents into the desired file
-        std::fs::write(&local_file_name, downloaded_content)
+        std::fs::write(&filename, downloaded_content)
             .map_err(|_| "[SSH WARN] Problem creating a local save file to store the data in")?;
 
-        // Hurray!
         Ok(local_file_name)
     }
 
@@ -227,8 +230,7 @@ impl SSHClient {
         // Now create the file in the remote server
         let mut target_file = sftp_session.create(Path::new(&target_destination))
             .map_err(|_| {
-                self.session_still_valid = false;
-                "[SSH ERROR] Could not create file link in destination folder"
+                "[SSH WARN] Could not create file link in destination folder"
             })?;
 
         target_file.write_all(&file_contents)
@@ -243,16 +245,17 @@ impl SSHClient {
             .unwrap()
             .channel_session();
         
-        let mut full_command: String = "source ~/.bashrc".to_string(); 
-       
+        let mut full_command: String = String::new(); 
+        let mut resulting_lines: Vec<String> = Vec::<String>::new();     
+        
         // Filter only commands that contain cd
         for com in &self.previous_commands {
             if com.contains("cd ") {
                 full_command = format!("{}; {}", full_command, com);
             }
         }
-        // If the new command contains 'cd /' it means no other previous cd command matters, and
-        // therefore can be cleared       
+
+        // If the new command is cd / then clear command history   
         if new_command.contains("cd /") {
             full_command = new_command.to_string();
             self.previous_commands = Vec::new();
@@ -262,9 +265,7 @@ impl SSHClient {
 
         let command: &str = &full_command;
 
-        println!("Executed command: {}", command);
-
-        let mut resulting_lines: Vec<String> = Vec::<String>::new();
+        println!("Executing command: {}", command);
 
         // Return type Result<Session, Error>
         match current_channel {
@@ -282,25 +283,27 @@ impl SSHClient {
                 let mut error_result = String::new();
                 // This has a Result<usize, Err> where usize is the number of bytes
 
-                // ? is propogating the error upwards to higher dimensions (wherever called the function) to handle it
+                // Read the result from the channel
                 channel.read_to_string(&mut result)
                     .map_err(|_| {
                         self.session_still_valid = false;
                         "[SSH ERROR] The channel was unable to read the result of your command.".to_string()
                     })?;
-                
+
+                // Read any error from the channel
                 channel.stderr().read_to_string(&mut error_result)
                     .map_err(|_| {
                         self.session_still_valid = false;
                         "[SSH ERROR] The channel was unable to read the error result of your command.".to_string()
                     })?;
-
+                
+                // Let the channel gracefully close
                 channel.wait_close()
                     .map_err(|_| {
                         self.session_still_valid = false;
                         "[SSH ERROR] The channel was unable to gracefully close.".to_string()
                     })?;
-
+                
                 if !error_result.is_empty() {
                     resulting_lines.push(format!("Command Failed, Error: {}", error_result));
                 } else {
@@ -324,18 +327,18 @@ impl SSHClient {
 
 impl HiddenObjectMethods for SSHClient {
     fn init(&mut self) {
-        self.logger_id = 50; 
+        self.logger_id = LOGGER; 
     }
 
     fn update(&mut self, only: &mut BTreeMap<u32, OnlyInteractable>, none: &mut BTreeMap<u32, NonInteractable>) {
         if self.session_still_valid {
             // If these values have been changed, it means a 'login' button has been filled in
-            if  self.login_field_values.0 != 0      // Hostname
-                 && self.login_field_values.1 != 0  // Username
-                 && self.login_field_values.2 != 0  // Password 
-                 && self.login_field_values.3 != 0  // (OR) Public Key
-                 && self.login_field_values.4 != 0  // Private key
-                 && self.login_field_values.5 != 0 {// Passphrase
+            if  self.login_field_values.0 != 0       // Hostname
+                 && self.login_field_values.1 != 0   // Username
+                 && self.login_field_values.2 != 0   // Password 
+                 && self.login_field_values.3 != 0   // (OR) Public Key
+                 && self.login_field_values.4 != 0   // Private key
+                 && self.login_field_values.5 != 0 { // Passphrase
 
                 // First, get the values from the text boxes, using the login_field_values as IDs           
                 let mut contents: [String; 6] = [const {String::new()}; 6];

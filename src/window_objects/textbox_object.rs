@@ -91,7 +91,7 @@ impl TextBox {
         self.on_enter.on_enter(textbox_id, win_man_parts, win_man_hiddens, &self.text_container.get_text())
     }
     
-    // For when ti is absolutely necessary
+    // For when it is absolutely necessary
     pub fn force_clear_text(&mut self) {
         self.text_container.set_text("".to_string());
     }
@@ -119,7 +119,6 @@ impl TextBox {
 
 impl WindowObjectMethods for TextBox {
     fn init(&mut self) {
-        // Need to get text working
         self.text_container.init();
         self.text_container.set_password_mode(self.password_mode);
     }

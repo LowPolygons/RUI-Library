@@ -39,8 +39,7 @@ impl TextBlock {
     pub fn set_password_mode(&mut self, inp: bool) {
         self.password_mode = inp;
     }
-    // This is a method implemented for the TextBox structure to display a default text when it has
-    // no value
+    // This is a method implemented for the TextBox structure to display a default text when it has no value
     pub fn empty_update(&mut self, default_string: &str, default_override: bool) {
         if !self.password_mode || default_override {
             draw_text(default_string, self.x, self.y, self.font_size, self.colour);
@@ -52,9 +51,7 @@ impl TextBlock {
 
 
 impl WindowObjectMethods for TextBlock {
-    fn init(&mut self) {
-      
-    }
+    fn init(&mut self) {}
 
     fn update(&mut self) {
         if !self.password_mode {

@@ -40,16 +40,14 @@ impl RaytracerWindow {
 }
 
 impl WindowObjectMethods for RaytracerWindow {
-    fn init(&mut self) {
-        
-    }
+    fn init(&mut self) {}
 
     fn update(&mut self) {
         draw_rectangle(self.x, self.y, self.w, self.h, self.colour);
         
         if self.render {
             let mut rng = rng();
-       
+
             for y_pixel in 0..(self.h as i32){
                 for x_pixel in 0..(self.w as i32) {
                     let r: f32 = (rng.random_range(1..=255) as f32 / 255.0) as f32;
@@ -60,10 +58,9 @@ impl WindowObjectMethods for RaytracerWindow {
                 }
             }
         }
-
         let image_texture = Texture2D::from_image(&self.image_object);
         
-        // The colour parameter is a tint, therefore use white
+        // The final parameter is a tint, therefore use white
         draw_texture(&image_texture, self.x, self.y, WHITE);
     }
 }

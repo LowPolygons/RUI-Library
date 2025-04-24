@@ -37,17 +37,19 @@ impl Logger {
     pub fn clear_lines(&mut self) {
         self.lines = Vec::<String>::new();
     }
-    
+
     pub fn add_line(&mut self, inp: &str) {
         let mut input: String = inp.to_string();
-
+        
+        // Calculate how many lines it should be split across so that it fits in the logger 
         let distance_from_edge: f32 = (self.w) - self.x_padding - WIDEST_CHARACTER_PIXEL_WIDTH;
 
         let max_num_chars: usize = (distance_from_edge / WIDEST_CHARACTER_PIXEL_WIDTH).floor() as usize;
-
+        
+        // If there is a line tag, add it to the input
         input = self.line_tag.clone() + &input; 
 
-        // Split at line breaks, then as this is only a logger and not a command line, just truncate
+        // Split at line breaks, convert to string, then as this is only a logger and not a command line, just truncate
         // the output if it exceeds the screen size
         let strings_to_add: Vec<String> = input
             .lines()
@@ -63,13 +65,12 @@ impl Logger {
 
 
 impl WindowObjectMethods for Logger {
-    fn init(&mut self) {
-    }
+    fn init(&mut self) {}
 
     fn update(&mut self) {
-        // The font size is how tall the characters are
+        // The font size is how tall the characters are + 2 for 1 pixel a side padding
         let max_lines: usize = (self.h / (self.font_size + 2.0)).floor() as usize;
-    let mut lower_index: usize = 0;
+        let mut lower_index: usize = 0;
         let upper_index: usize = self.lines.len();
       
         if self.lines.len() > max_lines {
@@ -79,7 +80,7 @@ impl WindowObjectMethods for Logger {
         let mut current: f32 = 0.0;
 
         for index in lower_index..upper_index {
-            let how_high_up: f32 = (upper_index - index) as f32;
+            let how_high_up: f32 = (upper_index - index - 1) as f32;
 
             draw_text(&self.lines[index], self.x + self.x_padding, (self.y + self.h) - self.font_size /* <- padding */ - how_high_up*self.font_size, self.font_size, self.string_colour);
 
@@ -87,6 +88,3 @@ impl WindowObjectMethods for Logger {
         }
     }
 }
-
-
-
