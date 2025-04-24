@@ -4,8 +4,8 @@ use std::collections::BTreeMap;
 use crate::window_objects::window_object_center::HiddenManager;
 use crate::window_objects::window_object_center::NonInteractable;
 
-use crate::window_objects::get_files_in_directory;
-use crate::window_objects::is_directory;
+use crate::interactable_implementations::get_files_in_directory;
+use crate::interactable_implementations::is_directory;
 
 use crate::object_ids::*;
 
