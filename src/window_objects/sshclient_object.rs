@@ -143,7 +143,7 @@ impl SSHClient {
                         return Err(HandshakeErrorCode::SessionAuthFail);
                     }
                 }
-                Err(e) => {
+                Err(_) => {
                     return Err(HandshakeErrorCode::LoginAuthFail);
                 }
             }
@@ -319,112 +319,92 @@ impl HiddenObjectMethods for SSHClient {
 
     fn update(&mut self, only: &mut BTreeMap<u32, OnlyInteractable>, none: &mut BTreeMap<u32, NonInteractable>) {
         if self.session_still_valid {
-            //Only if it has been established that everything is okay should things go
-        }
+            // If these values have been changed, it means a 'login' button has been filled in
+            if  self.login_field_values.0 != 0      // Hostname
+                 && self.login_field_values.1 != 0  // Username
+                 && self.login_field_values.2 != 0  // Password 
+                 && self.login_field_values.3 != 0  // (OR) Public Key
+                 && self.login_field_values.4 != 0  // Private key
+                 && self.login_field_values.5 != 0 {// Passphrase
 
-        // If these values have been changed, it means a 'login' button has been filled in
-        if  self.login_field_values.0 != 0      // Hostname
-             && self.login_field_values.1 != 0  // Username
-             && self.login_field_values.2 != 0  // Password 
-             && self.login_field_values.3 != 0  // (OR) Public Key
-             && self.login_field_values.4 != 0  // Private key
-             && self.login_field_values.5 != 0 {// Passphrase
+                // First, get the values from the text boxes, using the login_field_values as IDs           
+                let mut contents: [String; 6] = [const {String::new()}; 6];
 
-            // First, get the values from the text boxes, using the login_field_values as IDs
-            let mut hn: String = String::new();
-            let mut un: String = String::new();
-            let mut pw: String = String::new();
-            let mut pb: String = String::new();
-            let mut pv: String = String::new();
-            let mut pp: String = String::new();
-          
-            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.0) {
-                hn = obj.get_text().clone().to_string();
-                obj.force_clear_text();
-            }
-
-            //Username
-            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.1) {
-                un = obj.get_text().clone().to_string();
-                obj.force_clear_text();
-            }
-
-            //Password
-            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.2) {
-                pw = obj.get_text().clone().to_string();
-                obj.force_clear_text();
-            }
-            
-            //Public 
-            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.3) {
-                pb = obj.get_text().clone().to_string();
-                obj.force_clear_text();
-            }
-
-            //Private
-            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.4) {
-                pv = obj.get_text().clone().to_string();
-                obj.force_clear_text();
-            }
-
-            //Passphrase            
-            if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(&self.login_field_values.5) {
-                pp = obj.get_text().clone().to_string();
-                obj.force_clear_text();
-            }
-            //Confirm they all have a value
-            //TODO: Optimise this boolean algebra
-            if hn == "" || un == "" {
-                if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
-                    log_obj.add_line("[SSH CONNECT] There is a missing piece of info before attempting to log in.");
-                }
-            // if there are clashes (data in password as well as anything key then throw conflict)
-            } else if (pw != "" && (pp != "" || pv != "" || pb != "")) {
-                if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
-                    log_obj.add_line("[SSH CONNECT] Please SSH using only SSH Keys or by password, not both.");
-                }
-            } else {
-                let key_instead_of_password: bool = if pv != "" {
-                    true
-                } else {
-                    false
-                };
-
-                //Now attempt handshake
-                let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(hn, un, pw, pb, pv, pp, key_instead_of_password);
-                
-                if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
-                    match ssh_result {
-                        Ok(_) => {
-                           log_obj.add_line(&format!("[SSH INFO] Successful SSH into {}", self.remote_server)); 
-                        }
-                        Err(err_code) => {
-                            match err_code {
-                                HandshakeErrorCode::TcpFail => {
-                                    log_obj.add_line("[SSH ERROR] Failed to establish a TCP Connection");
-                                }
-                                HandshakeErrorCode::SessionFail => {
-                                    log_obj.add_line("[SSH ERROR] Failed to establish a new session");
-                                }
-                                HandshakeErrorCode::HandshakeFail => {
-                                    log_obj.add_line("[SSH WARN] Failed to create a link between a TCP Connection and a Session");
-                                    log_obj.add_line("[SSH HELP] ...Did you perhaps misspell the hostname?");
-                                }
-                                HandshakeErrorCode::LoginAuthFail => {
-                                    log_obj.add_line("[SSH WARN] Failed to authenticate a login");
-                                    log_obj.add_line("[SSH HELP] ...Did you type your username and password correctly?");
-                                }
-                                HandshakeErrorCode::SessionAuthFail => {
-                                    log_obj.add_line("[SSH ERROR] Failed to authenticate a Session");
-                                }
-                            } 
-                        }
+                for (i, id) in [self.login_field_values.0, 
+                    self.login_field_values.1, 
+                    self.login_field_values.2, 
+                    self.login_field_values.3, 
+                    self.login_field_values.4, 
+                    self.login_field_values.5].iter().enumerate() {
+                    
+                    if let Some(OnlyInteractable::TextBox(obj)) = only.get_mut(id) {
+                        contents[i] = obj.get_text().to_string();
+                        obj.force_clear_text();
                     }
                 }
-            }
-            
-            //Set back to zero so it doesn't endlessly occur
-            self.login_field_values = (0,0,0,0,0,0);
+
+                // Hostname and Username are mandatory so if they arent here throw this warning
+                if contents[0] == "" || contents[1] == "" {
+                    if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
+                        log_obj.add_line("[SSH CONNECT] There is a missing piece of info before attempting to log in.");
+                    }
+                // If there is contents in the password field and any field relating to SSHing, throw this warning 
+                } else if contents[2] != "" && (contents[3] != "" || contents[4] != "" || contents[5] != "") {
+                    if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
+                        log_obj.add_line("[SSH CONNECT] Please SSH using only SSH Keys or by password, not both.");
+                    }
+                // Otherwise, its okay
+                } else {
+                    // Boolean value so the handshake method knows which auth method to use
+                    let key_instead_of_password: bool = if contents[4] != "" {
+                        true
+                    } else {
+                        false
+                    };
+
+                    // Now attempt handshake
+                    let ssh_result: Result<i8, HandshakeErrorCode> = self.make_ssh_handshake(
+                                                            contents[0].clone(), 
+                                                            contents[1].clone(), 
+                                                            contents[2].clone(), 
+                                                            contents[3].clone(), 
+                                                            contents[4].clone(), 
+                                                            contents[5].clone(), 
+                                                            key_instead_of_password
+                                                         );
+                    
+                    if let Some(NonInteractable::Logger(log_obj)) = none.get_mut(&self.logger_id) {
+                        match ssh_result {
+                            Ok(_) => {
+                               log_obj.add_line(&format!("[SSH INFO] Successful SSH into {}", self.remote_server)); 
+                            }
+                            Err(err_code) => {
+                                match err_code {
+                                    HandshakeErrorCode::TcpFail => {
+                                        log_obj.add_line("[SSH ERROR] Failed to establish a TCP Connection");
+                                    }
+                                    HandshakeErrorCode::SessionFail => {
+                                        log_obj.add_line("[SSH ERROR] Failed to establish a new session");
+                                    }
+                                    HandshakeErrorCode::HandshakeFail => {
+                                        log_obj.add_line("[SSH WARN] Failed to create a link between a TCP Connection and a Session");
+                                        log_obj.add_line("[SSH HELP] ...Did you perhaps misspell the hostname?");
+                                    }
+                                    HandshakeErrorCode::LoginAuthFail => {
+                                        log_obj.add_line("[SSH WARN] Failed to authenticate a login");
+                                        log_obj.add_line("[SSH HELP] ...Did you type your username and password correctly?");
+                                    }
+                                    HandshakeErrorCode::SessionAuthFail => {
+                                        log_obj.add_line("[SSH ERROR] Failed to authenticate a Session");
+                                    }
+                                } 
+                            }
+                        }
+                    }
+                }    
+                //Set back to zero so it doesn't endlessly occur
+                self.login_field_values = (0,0,0,0,0,0);
+             }
         }
     }
 }

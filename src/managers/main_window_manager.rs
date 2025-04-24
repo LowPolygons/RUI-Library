@@ -40,10 +40,10 @@ pub struct WindowManager {
 
 // Methods that are necessary for the structure itself, and therefore seperable from the Methods trait
 impl WindowManager {
-    pub fn new(w: f32, h: f32, r: f32, g: f32, b: f32, a: f32) -> Self {
+    pub fn new(w: i32, h: i32, r: f32, g: f32, b: f32, a: f32) -> Self {
         WindowManager {
-            screen_width: w,
-            screen_height: h,
+            screen_width: w as f32,
+            screen_height: h as f32,
             main_window_colour: Color::new(r, g, b, a),
             non_interactable_components: BTreeMap::new(),
             only_interactable_components: BTreeMap::new(),

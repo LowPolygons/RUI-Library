@@ -17,6 +17,7 @@ pub struct RaytracerWindow {
     image_object: Image, //Dimensions equal to the raytracer window, can use set_pixel(x, y, colour)
 }
 
+#[allow(dead_code)]
 impl RaytracerWindow {
    pub fn new(x_: f32, y_: f32, w_: f32, h_: f32, c_: Color) -> Self {
         RaytracerWindow {
@@ -30,11 +31,9 @@ impl RaytracerWindow {
             image_object: Image::gen_image_color(w_ as u16, h_ as u16, c_),
         }
     }
-
    pub fn change_render_status(&mut self) {
        self.render = !self.render;
    }
-
    pub fn get_render_status(&self) -> bool {
        self.render
    }

@@ -20,6 +20,7 @@ pub trait HiddenObjectMethods {
 }
 
 #[derive(Clone)]
+#[allow(dead_code)]
 pub enum NonInteractable {
     RaytracerWindow(RaytracerWindow),
     ScreenDecoration(ScreenDecoration),

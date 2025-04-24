@@ -11,8 +11,7 @@ pub mod sshclient_object;
 
 use std::path::Path; 
 use std::fs;
-use std::fs::File;
-// To be paired with .contains()
+
 pub const ALLOWED_CHARACTERS: &str = "1234567890-=!@#$%^&*()_+qwertyuiop[]\\QWERTYUIOP{}|asdfghjkl:'ASDFGHJKL;\"zxcvbnm,./ZXCVBNM<>? ~";
 pub const WIDEST_CHARACTER_PIXEL_WIDTH: f32 = 9.0;
 

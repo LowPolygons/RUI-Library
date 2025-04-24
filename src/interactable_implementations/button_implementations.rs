@@ -3,7 +3,6 @@ use std::collections::BTreeMap;
 
 use crate::window_objects::window_object_center::HiddenManager;
 use crate::window_objects::window_object_center::NonInteractable;
-use crate::window_objects::raytracer_window_object::RaytracerWindow;
 
 use crate::object_ids::*;
 

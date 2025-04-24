@@ -1,13 +1,12 @@
 use macroquad::prelude::*;
+use macroquad::window::Conf;
+use crate::miniquad::conf::Icon;
 
 mod window_objects;
 mod interactable_implementations;
 mod managers;
-
 mod assets; 
-
 mod object_ids;
-
 mod init_graphics_objects;
 
 use crate::managers::user_interaction::UserInteractionManager;
@@ -15,10 +14,6 @@ use crate::managers::user_interaction::UserInteractionManagerMethods;
 
 use crate::managers::main_window_manager::WindowManagerMethods;
 use crate::managers::main_window_manager::WindowManager;
-
-
-use macroquad::window::Conf;
-use crate::miniquad::conf::Icon;
 
 use clap::Parser;
 
@@ -42,12 +37,18 @@ pub struct InputArgs {
     passphrase: Option<String>,
 }
 
+const SCREEN_WIDTH: i32 = 1772;
+const SCREEN_HEIGHT: i32 = 900;
+const SCREEN_R: f32 = 0.7647;
+const SCREEN_G: f32 = 0.235;
+const SCREEN_B: f32 = 0.235;
+const SCREEN_A: f32 = 1.0;
 
-fn TRSSH() -> Conf {
+fn trssh_info() -> Conf {
     Conf {
         window_title: "TRSSH".to_string(),
-        window_width: 1772,
-        window_height: 900,
+        window_width: SCREEN_WIDTH,
+        window_height: SCREEN_HEIGHT,
         fullscreen: false,
         window_resizable: false,
         icon: Some(Icon {
@@ -60,13 +61,12 @@ fn TRSSH() -> Conf {
 }
 
 
-// Trish
-#[macroquad::main(TRSSH)]
+#[macroquad::main(trssh_info)]
 async fn main() {
     //=-=-=-=== General Initialisation ===-=-=-=//
 
     //  Window Manager handles graphics for the entire window
-    let mut window_manager = WindowManager::new(1772.0, 900.0, 0.7647, 0.235, 0.235, 1.0);
+    let mut window_manager = WindowManager::new(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_R, SCREEN_G, SCREEN_B, SCREEN_A);
     //  User Interaction Manager handles how the user and ui will interact
     let mut user_interation_manager = UserInteractionManager::new();
 
