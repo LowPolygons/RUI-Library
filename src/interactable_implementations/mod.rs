@@ -26,14 +26,14 @@ pub fn get_files_in_directory(dir: &str) -> Result<(Vec<String>, Vec<String>), S
         let item_type = item.file_type()
             .map_err(|_| "[SSH WARN] Couldnt get type of file, likely doesnt exist")?;
 
-        //Check if it is a directory
+        // Check if it is a directory
         if item_type.is_dir() {
             directories.push(path.clone());
 
             let list_of_files: (Vec<String>, Vec<String>) = get_files_in_directory(&path)
                 .map_err(|err| err)?;
             
-            //Push to return val
+            // Push to return val
             for val in list_of_files.0 {
                 items.push(val);
             }
