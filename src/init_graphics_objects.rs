@@ -172,35 +172,34 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
 
 
     only_interactable_components.insert(10, OnlyInteractable::TextBox(
-        TextBox::new(25.0, 600.0, 300.0, 50.0,
+        TextBox::new(25.0, 545.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Enter a file to upload".to_string(),
             Box::new(UploadFile),
-            TextBlock::new(35.0, 630.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            TextBlock::new(35.0, 575.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
             false, //Password mode
             true,  //Enter clears text 
             true   //Enter removes focus
         )
     ));
-    non_interactable_components.insert(110,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 595.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(110,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 540.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
     only_interactable_components.insert(11, OnlyInteractable::TextBox(
-        TextBox::new(25.0, 665.0, 300.0, 50.0,
+        TextBox::new(25.0, 610.0, 300.0, 50.0,
             Color::new(0.9, 0.9, 0.9, 1.0),
             Color::new(1.0, 1.0, 1.0, 1.0),
             Color::new(0.7, 0.7, 0.7, 1.0),
             "Enter a directory to upload".to_string(),
             Box::new(UploadDirectory),
-            TextBlock::new(35.0, 695.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
+            TextBlock::new(35.0, 640.0, Color::new(0.0, 0.0, 0.0, 1.0), String::new(), 20.0),
             false, //Password mode
             true,  //Enter clears text 
             true   //Enter removes focus
         )
     ));
-    non_interactable_components.insert(111,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 660.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
-
+    non_interactable_components.insert(111,  NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 605.0, 310.0, 60.0, Color::new(0.05, 0.05, 0.05, 1.0))));
 
     non_interactable_components.insert(51,  NonInteractable::ScreenDecoration(ScreenDecoration::new(9.0, 9.0, 664.0, 342.0, Color::new(0.2, 0.2, 0.2, 1.0))));
     non_interactable_components.insert(52, NonInteractable::ScreenDecoration(ScreenDecoration::new(9.0, 399.0, 664.0, 492.0, Color::new(0.2, 0.2, 0.2, 1.0))));
@@ -211,13 +210,13 @@ pub fn init_graphics_objects_main(non_interactable_components: &mut BTreeMap<u32
 
     non_interactable_components.insert(71, NonInteractable::TextBlock(TextBlock::new(1161.0, 33.0, Color::new(0.05, 0.05, 0.05, 1.0), "Logger".to_string(), 46.0)));
 
-    non_interactable_components.insert(54, NonInteractable::ScreenDecoration(ScreenDecoration::new(20.0, 460.0, 310.0, 118.0, Color::new(0.05, 0.05, 0.05, 1.0))));
-    non_interactable_components.insert(55, NonInteractable::ScreenDecoration(ScreenDecoration::new(25.0, 465.0, 300.0, 108.0, Color::new(0.5, 0.2, 0.2, 1.0))));
+    non_interactable_components.insert(54, NonInteractable::ScreenDecoration(ScreenDecoration::new(335.0, 475.0, 310.0, 125.0, Color::new(0.05, 0.05, 0.05, 1.0))));
+    non_interactable_components.insert(55, NonInteractable::ScreenDecoration(ScreenDecoration::new(340.0, 480.0, 300.0, 115.0, Color::new(0.5, 0.2, 0.2, 1.0))));
     
-    non_interactable_components.insert(72, NonInteractable::TextBlock(TextBlock::new(30.0, 495.0, Color::new(0.05, 0.05, 0.05, 1.0), "Warning".to_string(), 40.0)));
-    non_interactable_components.insert(73, NonInteractable::TextBlock(TextBlock::new(30.0, 520.0, Color::new(0.05, 0.05, 0.05, 1.0), "Downloading files is a thread-".to_string(), 20.0)));
-    non_interactable_components.insert(74, NonInteractable::TextBlock(TextBlock::new(30.0, 540.0, Color::new(0.05, 0.05, 0.05, 1.0), "blocking action".to_string(), 20.0)));
-    non_interactable_components.insert(75, NonInteractable::TextBlock(TextBlock::new(30.0, 560.0, Color::new(0.05, 0.05, 0.05, 1.0), "The screen may go unresponsive ".to_string(), 20.0)));
+    non_interactable_components.insert(72, NonInteractable::TextBlock(TextBlock::new(350.0, 510.0, Color::new(0.05, 0.05, 0.05, 1.0), "Warning".to_string(), 40.0)));
+    non_interactable_components.insert(73, NonInteractable::TextBlock(TextBlock::new(350.0, 535.0, Color::new(0.05, 0.05, 0.05, 1.0), "SFTP actions are a thread-".to_string(), 20.0)));
+    non_interactable_components.insert(74, NonInteractable::TextBlock(TextBlock::new(350.0, 555.0, Color::new(0.05, 0.05, 0.05, 1.0), "blocking action".to_string(), 20.0)));
+    non_interactable_components.insert(75, NonInteractable::TextBlock(TextBlock::new(350.0, 575.0, Color::new(0.05, 0.05, 0.05, 1.0), "The screen may go unresponsive ".to_string(), 20.0)));
 
     hidden_components.insert(100, HiddenManager::SSHClient(SSHClient::new()));
 }
