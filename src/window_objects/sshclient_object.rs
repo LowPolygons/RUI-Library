@@ -191,7 +191,7 @@ impl SSHClient {
         println!("Downloading {}", target_file_name);
 
         // Open the file 
-        let mut target_file = sftp_session.open(Path::new(filename))
+        let mut target_file = sftp_session.open(Path::new(&target_file_name))
             .map_err(|_| "[SSH WARN] Problem creating file link".to_string())?;
 
         // Read contents into vector of strings
@@ -245,7 +245,7 @@ impl SSHClient {
             .unwrap()
             .channel_session();
         
-        let mut full_command: String = String::new(); 
+        let mut full_command: String = "source ~/.bashrc".to_string(); 
         let mut resulting_lines: Vec<String> = Vec::<String>::new();     
         
         // Filter only commands that contain cd
