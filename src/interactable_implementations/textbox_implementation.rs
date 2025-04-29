@@ -157,8 +157,8 @@ impl TextboxMethod for UploadDirectory {
                     let dir_files_and_directories = get_files_in_directory(text).map_err(|err| err).ok()?;
                     let mut directory_success: bool = true;
 
-                    for curr_dir in dir_files_and_directories.1  {
-
+                    for mut curr_dir in dir_files_and_directories.1  {
+                        curr_dir = curr_dir.replace("\\", "/");
                         // Log in terminal as debug info
                         println!("Making directory {}", curr_dir);
 
@@ -176,8 +176,8 @@ impl TextboxMethod for UploadDirectory {
                         }
                     }
 
-                    for curr_file in dir_files_and_directories.0 {
-
+                    for mut curr_file in dir_files_and_directories.0 {
+                        curr_file = curr_file.replace("\\", "/");
                         // Log in terminal as debug info
                         println!("Attempting to upload {}", curr_file);
 
