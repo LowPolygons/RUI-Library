@@ -60,10 +60,32 @@ fn trssh_info() -> Conf {
     }
 }
 
+#[cfg(target_os = "windows")]
+fn set_autostart(app_name: &str) {
+    use std::env;
+    use winreg::enums::*;
+    use winreg::RegKey;
+
+    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    let path = "Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+
+    let (key, _) = hkcu.create_subkey(path)
+        .expect("Failed to open registry key");
+
+    let exe_path = env::current_exe()
+        .expect("Can't find path to current executable");
+
+    key.set_value(app_name, &exe_path.to_str().unwrap())
+        .expect("Failed to set registry key value");
+
+    println!("Startup entry set for '{}'", app_name);
+}
+
 
 #[macroquad::main(trssh_info)]
 async fn main() {
     // =-=-=-=== General Initialisation ===-=-=-=//
+    set_autostart("TRSSH");
 
     //  Window Manager handles graphics for the entire window
     let mut window_manager = WindowManager::new(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_R, SCREEN_G, SCREEN_B, SCREEN_A);
