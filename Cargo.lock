@@ -1240,7 +1240,6 @@ dependencies = [
  "macroquad",
  "rand 0.9.0",
  "ssh2",
- "winreg",
 ]
 
 [[package]]
@@ -1465,16 +1464,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "63d3fcd9bba44b03821e7d699eeee959f3126dcc4aa8e4ae18ec617c2a5cea10"
 dependencies = [
  "memchr",
-]
-
-[[package]]
-name = "winreg"
-version = "0.55.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb5a765337c50e9ec252c2069be9bf91c7df47afb103b642ba3a53bf8101be97"
-dependencies = [
- "cfg-if",
- "windows-sys",
 ]
 
 [[package]]
